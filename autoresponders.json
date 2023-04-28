@@ -1,0 +1,296 @@
+{
+    "commands": [
+        {
+            "name": "discord",
+            "response": "Join the Box Discord! https://discord.gg/4ehVSmZ",
+            "senderPrefix": true
+        },
+        {
+            "name": "youtube",
+            "response": "https://www.youtube.com/hatefulbox",
+            "senderPrefix": true
+        },
+        {
+            "name": "tiktok",
+            "response": "follow or bad https://www.tiktok.com/@hatefulbox",
+            "senderPrefix": true
+        },
+        {
+            "name": "socials",
+            "response": "Discord: https://discord.gg/4ehVSmZ YouTube: https://www.youtube.com/hatefulbox Twitter: https://twitter.com/hatefulbox1 Tiktok: https://www.tiktok.com/@hatefulbox",
+            "senderPrefix": true
+        },
+        {
+            "name": "modded",
+            "response": "IP is modded.hatefulbox.com --- Version 1.2.2.1 -- Link To Pack - https://www.curseforge.com/minecraft/modpacks/nomifactory/files/3641376",
+            "senderPrefix": true
+        },
+        {
+            "name": "bttv",
+            "response": "Get the Better Twitch TV Chrome Extention here: https://bit.ly/K7PByh",
+            "senderPrefix": true
+        },
+        {
+            "name": "hypixel",
+            "response": "If you want to join the our hypixel party \"/p join hatefulbox\" hatefu3Heart",
+            "senderPrefix": true
+        },
+        {
+            "name": "ign",
+            "response": "hatefulbox",
+            "senderPrefix": true
+        },
+        {
+            "name": "keyboard",
+            "response": "Coller Master MK730",
+            "senderPrefix": true
+        },
+        {
+            "name": "keyblurknobodycomplimentboxtopwhilei'mgoneoard",
+            "response": "BRB",
+            "senderPrefix": true
+        },
+        {
+            "name": "server",
+            "aliases": ["survival"],
+            "response": "You can join the Survival Server with the ip mc.hatefulbox.com - 1.19.2",
+            "senderPrefix": true
+        },
+        {
+            "name": "specs",
+            "response": "i9 9900k, 64GB Ram, 960GB M.2, 1TB SSD, 8GB RTX 2070",
+            "senderPrefix": true
+        },
+        {
+            "name": "amongus",
+            "response": "Boxo will not be playing Among Us tonight, unless he is playing Among Us tonight :)",
+            "senderPrefix": true
+        },
+        {
+            "name": "cod",
+            "response": "Username is hatefulbox#1343881",
+            "senderPrefix": true
+        },
+        {
+            "name": "hollowknight",
+            "response": "buy this https://www.hollowknight.com/ or BlueMewT will be sad",
+            "senderPrefix": true
+        },
+        {
+            "name": "jaxy",
+            "response": "self promo time!!! https://soundcloud.com/jaxyedm",
+            "senderPrefix": true
+        },
+
+
+        {
+            "name": "mouse",
+            "response": "G Pro Wireless",
+            "senderPrefix": true
+        },
+        {
+            "name": "merch",
+            "response": "Checkout the store!! https://hatefulbox.com/shop",
+            "senderPrefix": true
+        },
+        {
+            "name": "multi",
+            "response": "https://multimc.org/#Download",
+            "senderPrefix": true
+        },
+        {
+            "name": "guild",
+            "response": "Join The Box Guild Because its the Best one on Hypixel",
+            "senderPrefix": true
+        },
+        {
+            "name": "website",
+            "response": "https://hatefulbox.com/",
+            "senderPrefix": true
+        },
+        {
+            "name": "val",
+            "response": "user - hatefulbox Tag - #box",
+            "senderPrefix": true
+        },
+        {
+            "name": "twitter",
+            "response": "https://twitter.com/hatefulbox1",
+            "senderPrefix": true
+        },
+        {
+            "name": "reddit",
+            "response": "Come join and post memes and stuff https://www.reddit.com/r/hatefulbox/",
+            "senderPrefix": true
+        },
+        {
+            "name": "sbstats",
+            "response": "https://sky.shiiyu.moe/stats/hatefulbox/Kiwi",
+            "senderPrefix": true
+        },
+        {
+            "name": "redacted",
+            "response": "<message deleted>",
+            "senderPrefix": true
+        },
+        {
+            "name": "raid",
+            "response": "Box Raid!!!!! hatefu3Pog hatefu3Pog hatefu3Pog hatefu3Pog hatefu3Hype hatefu3Hype hatefu3Hype hatefu3Hype hatefu3Hype hatefu3Hype",
+            "senderPrefix": true
+        },
+        {
+            "name": "multiwin",
+            "response": "https://youtu.be/fEdIJBot_Ow",
+            "senderPrefix": true
+        },
+        {
+            "name": "multimac",
+            "response": "https://youtu.be/8Q9p2ocY6YQ",
+            "senderPrefix": true
+        },
+        {
+            "name": "sub",
+            "response": "Gif Commands that subs can use - !pog - !fire - !rip - !rip2 - !rip3 - !ultra - !heart - !hype - !tnt - !boat - !cora",
+            "senderPrefix": true
+        },
+        {
+            "name": "hype",
+            "response": "hatefu3Hype hatefu3Hype hatefu3Hype hatefu3Hype hatefu3Hype hatefu3Hype hatefu3Hype hatefu3Hype hatefu3Hype hatefu3Hype hatefu3Hype hatefu3Hype",
+            "senderPrefix": true
+        }
+    ],
+    "phrases": [
+        {
+            "pattern": "\\bhi\\b",
+            "response": "Welcome To The Stream!",
+            "senderPrefix": true,
+            "senderRateLimit": 600000
+        },
+        {
+            "pattern": "\\bfood\\b",
+            "response": "🍔ඞ",
+            "senderPrefix": false
+        },
+
+        {
+            "pattern": "\\blurk\\b",
+            "response": "hatefu3Hello Thanks for the lurk!!",
+            "senderPrefix": false
+        },
+        {
+            "pattern": "\\bxd\\b",
+            "response": "-_-",
+            "senderPrefix": false
+        },
+        {
+            "pattern": "\\buwu\\b",
+            "response": "っ(uwu)っ",
+            "senderPrefix": false
+        },
+        {
+            "pattern": "\\busmell\\b",
+            "response": "no you!",
+            "senderPrefix": false
+        },
+        {
+            "pattern": "\\btaco\\b",
+            "response": "( っ'-')╮ =͟͟͞🌮 Torquito, torquito Deep Fried Taco Shelll. Torquito, torquito everybodys talking bout torquitos, torquitos Deep Fried Taco Shell. ( っ'-')╮ =͟͟͞🌮",
+            "senderPrefix": false
+        },
+        {
+            "pattern": "\\bcheese\\b",
+            "response": "hatefu3Grr StinkyCheese StinkyCheese",
+            "senderPrefix": false
+        },
+        {
+            "pattern": "\\bsonic\\b",
+            "response": "三三ᕕ( ᐛ )ᕗ",
+            "senderPrefix": false
+        },
+        {
+            "pattern": "\\bslow\\b",
+            "response": "yea im a bit slow FeelsDankMan",
+            "senderPrefix": false
+        },
+        {
+            "pattern": "\\bppap\\b",
+            "response": "(✒️＋🍍)＋(🍎＋✒️)＝PPAP",
+            "senderPrefix": false
+        },
+        {
+            "pattern": "\\bpixelbob\\b",
+            "response": "I guess I'm a little weird. PixelBob",
+            "senderPrefix": false
+        },
+        {
+            "pattern": "\\bmommyshark\\b",
+            "response": "dodoo doo doo do",
+            "senderPrefix": false
+        },
+        {
+            "pattern": "\\bmmm\\b",
+            "response": "mmmmmmmmmmmmmmmm",
+            "senderPrefix": false
+        },
+        {
+            "pattern": "\\bhoney\\b",
+            "response": "honey, you mean the free browser extention that saves you money while you shop? the same honey that you install in just two easy clicks? joinhoney.com/ref/ndzysqa",
+            "senderPrefix": false
+        },
+        {
+            "pattern": "\\bghost\\b",
+            "response": "◑﹏◐",
+            "senderPrefix": false
+        },
+        {
+            "pattern": "\\bgg\\b",
+            "response": "wp",
+            "senderPrefix": false
+        },
+        {
+            "pattern": "\\bflex\\b",
+            "response": "୧( ಠ Д ಠ )୨",
+            "senderPrefix": false
+        },
+        {
+            "pattern": "\\bfight\\b",
+            "response": "─=≡Σ(╯°□°)╯︵┻┻",
+            "senderPrefix": false
+        },
+        {
+            "pattern": "\\beww\\b",
+            "response": "(͡°ʖ̯͡°)",
+            "senderPrefix": false
+        },
+        {
+            "pattern": "\\bdab\\b",
+            "response": "ヽ( ᐖゞ)",
+            "senderPrefix": false
+        },
+        {
+            "pattern": "\\bbad\\b",
+            "response": "no You!",
+            "senderPrefix": false
+        },
+        {
+            "pattern": "\\bbacon\\b",
+            "response": "🥓🥓🥓🥓🥓🥓🥓🥓",
+            "senderPrefix": false
+        },
+        {
+            "pattern": "\\bbabyshark\\b",
+            "response": "doodoooooooo",
+            "senderPrefix": false
+        },
+        {
+            "pattern": "\\bnerd\\b",
+            "response": "Your a NERD",
+            "senderPrefix": false
+        },
+        {
+            "pattern": "\\bfallguy\\b",
+            "response": "⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠛⠉⠉⠉⠉⠉⠉⠉⠛⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿ ⣿⣿⣿⣿⣿⣿⣿⣿⣿⠏⠄⢀⣠⣶⣶⣶⣶⣤⡀⠄⠄⠹⣿⣿⣿⣿⣿⣿⣿⣿ ⣿⣿⣿⣿⣿⣿⣿⣿⡏⠄⠄⣾⡿⢿⣿⣿⡿⢿⣿⡆⠄⠄⢻⣿⣿⣿⣿⣿⣿⣿ ⣿⣿⣿⣿⣿⣿⣿⡿⠃⠄⠄⢿⣇⣸⣿⣿⣇⣸⡿⠃⠄⠄⠸⣿⣿⣿⣿⣿⣿⣿ ⣿⣿⣿⣿⣿⡿⠋⠄⠄⠄⠄⠄⠉⠛⠛⠛⠛⠉⠄⠄⠄⠄⠄⠄⠙⣿⣿⣿⣿⣿ ⣿⣿⣿⣿⡟⠁⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠈⢿⣿⣿⣿ ⣿⣿⣿⡟⠄⠄⠄⠠⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠈⢿⣿⣿ ⣿⣿⡟⠄⠄⠄⢠⣆⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⣧⠄⠄⠄⠈⢿⣿ ⣿⣿⡇⠄⠄⠄⣾⣿⡀⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⢰⣿⣧⠄⠄⠄⠘⣿ ⣿⣿⣇⠄⣰⣶⣿⣿⣿⣦⣀⡀⠄⠄⠄⠄⠄⠄⠄⢀⣠⣴⣿⣿⣿⣶⣆⠄⢀⣿ ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠏⠄⠄⢸⣿⠇⠄⠄⠹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿ ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣦⣤⣴⣾⣿⣶⣤⣤⣴⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿",
+            "senderPrefix": false
+        }
+    ]
+}

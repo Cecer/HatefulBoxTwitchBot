@@ -1,0 +1,19 @@
+{
+  "type": "module",
+  "name": "twitchchatbot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@twurple/auth": "^6.1.1",
+    "@twurple/chat": "^6.1.1",
+    "@twurple/pubsub": "^6.1.1",
+    "chalk": "^5.2.0",
+    "date-fns": "^2.29.3"
+  }
+}
