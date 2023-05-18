@@ -66,7 +66,7 @@ export default class Casino {
             if (this.rollJackpot(userData, betAmount)) {
                 let jackpotAmount = this.jackpotSize;
 
-                jackpotBankUser.points = 0;
+                this.#jackpotBankUser.points = 0;
                 userData.points += jackpotAmount;
                 replyFunc(`YOU WIN THE JACKPOT OF ${jackpotAmount}! You now have ${userData.points} points.`);
             } else {
