@@ -157,6 +157,11 @@
             "name": "hype",
             "response": "hatefu3Hype hatefu3Hype hatefu3Hype hatefu3Hype hatefu3Hype hatefu3Hype hatefu3Hype hatefu3Hype hatefu3Hype hatefu3Hype hatefu3Hype hatefu3Hype",
             "senderPrefix": true
+        },
+        {
+            "name": "sleep",
+            "response": "Yeah... hateful streams at mean times. Enjoy your snoozing!",
+            "senderPrefix": true
         }
     ],
     "phrases": [
