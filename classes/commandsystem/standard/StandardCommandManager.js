@@ -43,6 +43,10 @@ export default class StandardCommandManager extends BaseCommandManager {
         }
         
         let parts = message.substr(prefix.length).trim().split(" ").filter(arg => arg !== "");
+        if (parts.length === 0) {
+            // Welp...
+            return false;
+        }
         let command = this.#commands.get(parts[0].toLowerCase());
         if (!command) {
             // No such commands
