@@ -22,7 +22,7 @@ export default class PhrasePhraseManager extends BaseCommandManager {
 
     #register(phrase) {
         this.#phrases.push(phrase);
-        console.log(`[PhraseManager] Registered phrase: ${phrase.pattern}`);
+        console.log(`${new Date().toISOString()} [PhraseManager] Registered phrase: ${phrase.pattern}`);
     }
 
     handle(userData, message, replyFunc) {
@@ -36,7 +36,7 @@ export default class PhrasePhraseManager extends BaseCommandManager {
         for (let phrase of this.#phrases) {
             if (phrase.doesMessageMatch(message)) {
                 // Phrase matched!
-                console.log(`[PhraseManager] Handling phrase ${phrase.pattern} for ${userData.username}`);
+                console.log(`${new Date().toISOString()} [PhraseManager] Handling phrase ${phrase.pattern} for ${userData.username}`);
                 try {
                     phrase.handle(userData, message, replyFunc);
                     matchCount++;
@@ -44,7 +44,7 @@ export default class PhrasePhraseManager extends BaseCommandManager {
                         break;
                     }
                 } catch (e) {
-                    console.error("[PhraseManager] Error handling command: ", e);
+                    console.error("${new Date().toISOString()} [PhraseManager] Error handling command: ", e);
                 }
             }
         }

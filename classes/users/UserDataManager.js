@@ -65,7 +65,7 @@ export default class UserDataManager {
         if (userData.username !== username) {
             this.#usersByUsername.delete(userData.username);
 
-            console.log(`${chalk.blue(`[UserData]`)} ${chalk.gray(`Updating username from ${userData.username} to ${username}`)}`);
+            console.log(`${new Date().toISOString()} ${chalk.blue(`[UserData]`)} ${chalk.gray(`Updating username from ${userData.username} to ${username}`)}`);
             userData.username = username;
             this.#usersByUsername.set(username, userData);
         }
@@ -83,7 +83,7 @@ export default class UserDataManager {
         return this.#usersById.computeIfAbsent(userId, () => {
             let userData = new UserData(userId);
             this.#usersByUsername.set(userData.username, userData);
-            console.log(`${chalk.blue(`[UserData]`)} ${chalk.gray(`Loaded ${userData.userId} (${userData.username})`)}`);
+            console.log(`${new Date().toISOString()} ${chalk.blue(`[UserData]`)} ${chalk.gray(`Loaded ${userData.userId} (${userData.username})`)}`);
             return userData;
         });
     }

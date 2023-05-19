@@ -80,7 +80,7 @@ export default class Casino {
     }
 
     logBalance() {
-        console.log(`${chalk.yellow(`[CASINO]`)} ${chalk.gray(`Profit: ${this.profitSize} | Jackpot: ${this.jackpotSize}`)}`);
+        console.log(`${new Date().toISOString()} ${chalk.yellow(`[CASINO]`)} ${chalk.gray(`Profit: ${this.profitSize} | Jackpot: ${this.jackpotSize}`)}`);
     }
 
     get mainBankUserData() {

@@ -23,9 +23,9 @@ export default class StandardCommandManager extends BaseCommandManager {
     #register(command) {
         this.#commands.set(command.name, command);
         if (command.id === command.name) {
-            console.log(`[CommandManager] Registered command: ${command.name}`);
+            console.log(`${new Date().toISOString()} [CommandManager] Registered command: ${command.name}`);
         } else {
-            console.log(`[CommandManager] Registered command alias: ${command.name} => ${command.id}`);
+            console.log(`${new Date().toISOString()} [CommandManager] Registered command alias: ${command.name} => ${command.id}`);
         }
     }
 
@@ -61,13 +61,13 @@ export default class StandardCommandManager extends BaseCommandManager {
 
         parts.shift(); // Remove the first part (the command name) leaving just the arguments
 
-        console.log(`[CommandManager] Handling command ${command.name} for ${userData.username}`);
+        console.log(`${new Date().toISOString()} [CommandManager] Handling command ${command.name} for ${userData.username}`);
         try {
             command.handle(userData, parts, replyFunc);
         } catch (e) {
             replyFunc(`Something went wrong with that command! IT'S ALL YOUR FAULT!`);
             //replyFunc(`Something went wrong with that command! Sorry about that :(`)
-            console.error("[CommandManager] Error handling command: ", e);
+            console.error("${new Date().toISOString()} [CommandManager] Error handling command: ", e);
         }
         return true;
     }
