@@ -158,6 +158,10 @@ function register_idle(commandManager, userDataManager, settingsManager) {
             let amount = 10;
             if (args.length >= 1) {
                 amount = parseInt(args.shift());
+                if (Number.isNaN(amount)) {
+                    replyFunc(`Usage: !idle <amount>`);
+                    return;
+                }
             }
 
             if (amount < 0) {
