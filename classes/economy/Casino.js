@@ -60,13 +60,13 @@ export default class Casino {
 
         userData.points -= betAmount;
         this.#mainBankUser.points += (betAmount - jackpotContribution);
-        this.#jackpotBankUser.points += jackpotContribution;
+        this.jackpotSize += jackpotContribution;
 
         if (this.rollWin(userData, betAmount)) {
             if (this.rollJackpot(userData, betAmount)) {
                 let jackpotAmount = this.jackpotSize;
 
-                this.#jackpotBankUser.points = 0;
+                this.jackpotSize = 0;
                 userData.points += jackpotAmount;
                 replyFunc(`YOU WIN THE JACKPOT OF ${jackpotAmount}! You now have ${userData.points} points.`);
             } else {
@@ -83,10 +83,20 @@ export default class Casino {
         console.log(`${chalk.yellow(`[CASINO]`)} ${chalk.gray(`Profit: ${this.profitSize} | Jackpot: ${this.jackpotSize}`)}`);
     }
 
+    get mainBankUserData() {
+        return this.#mainBankUser;
+    }
+    get jackpotBankUserData() {
+        return this.#jackpotBankUser;
+    }
+
     get profitSize() {
         return this.#mainBankUser.points;
     }
     get jackpotSize() {
         return this.#jackpotBankUser.points;
+    }
+    set jackpotSize(value) {
+        this.#jackpotBankUser.points = value;
     }
 }
