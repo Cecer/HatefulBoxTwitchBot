@@ -7,6 +7,7 @@ export default (commandManager, userDataManager, settingsManager) => {
     register_followage(commandManager);
     register_accountage(commandManager);
     register_seen(commandManager, userDataManager);
+    register_idle(commandManager, userDataManager, settingsManager)
 }
 
 function register_settings(commandManager, userDataManager, settingsManager) {
@@ -140,6 +141,49 @@ function register_seen(commandManager, userDataManager) {
                 let lastSeenStr = dateFns.formatDistanceToNowStrict(targetData.lastSeen, {addSuffix: true, roundingMethod: "floor"})
                 replyFunc(`I last saw ${targetData.username} ${lastSeenStr}`);
             }
+        })
+        .register();
+}
+
+function register_idle(commandManager, userDataManager, settingsManager) {
+    commandManager.newBuilder("idle")
+        .senderRateLimit(10000)
+        .handler((userData, args, replyFunc) => {
+            if (settingsManager.getSetting(userData, "command.idle.excluded")) {
+                replyFunc("Oh you're new to the idle game! Welcome aboard. You are now taking part in the game.");
+                userData.setSettingOverride("command.idle.excluded", false);
+                return;
+            }
+
+            let amount = 10;
+            if (args.length >= 1) {
+                amount = parseInt(args.shift());
+            }
+
+            if (amount < 0) {
+                amount = 0;
+            } else {
+                let max = settingsManager.getSetting(userData, "command.idle.maxCount");
+                if (amount > max) {
+                    amount = max;
+                }
+            }
+
+            let allUsers = userDataManager.getAll()
+                .filter(data => !settingsManager.getSetting(data, "command.idle.excluded"))
+                .sort((a, b) => a.lastSeen - b.lastSeen);
+            let topUsers = allUsers.slice(0, amount);
+            
+            let response = `The ${amount} Best Idlers: ${topUsers
+                .map((data, position) => `#${position + 1} ${data.username}: ${dateFns.formatDistanceToNowStrict(data.lastSeen, {addSuffix: false, roundingMethod: "floor"})}`)
+                .join(", ")}.`;
+            
+            if (!topUsers.includes(userData)) {
+                response += ` You are #${allUsers.indexOf(userData) + 1}.`;
+            }
+            
+
+            replyFunc(response);
         })
         .register();
 }

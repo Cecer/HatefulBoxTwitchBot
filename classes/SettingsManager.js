@@ -38,11 +38,13 @@ export default class SettingsManager {
         this.setBase("command.tax.allowed", false);
         this.setBase("command.top.maxCount", 15);
         this.setBase("command.top.excluded", true);
+        this.setBase("command.idle.maxCount", 15);
 
         this.setGroup("admin", "command.mint.allowed", true);
         this.setGroup("admin", "command.tax.allowed", true);
         this.setGroup("admin", "command.points.other.allowed", true);
         this.setGroup("admin", "command.top.maxCount", 100);
+        this.setGroup("admin", "command.idle.maxCount", 100);
         this.setGroup("admin", "command.setting.allowed", true);
         this.setGroup("admin", "command.group.allowed", true);
         this.setGroup("admin", "command.group.other.allowed", true);
@@ -50,9 +52,11 @@ export default class SettingsManager {
         this.setGroup("admin", "command.group.modify.protected", true);
 
         this.setGroup("bot", "commandManager.ignore", true);
+        this.setGroup("bot", "command.idle.excluded", true);
 
         this.setGroup("virtual", "commandManager.ignore", true);
         this.setGroup("virtual", "command.top.excluded", true);
+        this.setGroup("virtual", "command.idle.excluded", true);
     }
 
     setBase(key, value) {
