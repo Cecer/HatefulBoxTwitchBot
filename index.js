@@ -9,6 +9,7 @@ import SettingsManager from './classes/SettingsManager.js';
 import StandardCommandManager from './classes/commandsystem/standard/StandardCommandManager.js';
 import PhraseCommandManager from './classes/commandsystem/phrase/PhraseCommandManager.js';
 import Casino from './classes/economy/Casino.js';
+import Payday from './classes/economy/Payday.js';
 
 import registerUserCommands from "./classes/commands/UserCommands.js";
 import registerEconomyCommands from "./classes/commands/EconomyCommands.js";
@@ -20,7 +21,7 @@ const settingsManager = new SettingsManager(userDataManager);
 const commandManager = new StandardCommandManager(settingsManager);
 const phraseManager = new PhraseCommandManager(settingsManager);
 const casino = new Casino(userDataManager, settingsManager);
-
+const payday = new Payday(userDataManager, settingsManager);
 
 const config = JSON.parse(fs.readFileSync("./config.json"));
 
@@ -52,5 +53,7 @@ chatClient.onMessage((channel, _, message, metadata) => {
 });
 
 registerUserCommands(commandManager, userDataManager, settingsManager);
-registerEconomyCommands(commandManager, userDataManager, settingsManager, casino);
+registerEconomyCommands(commandManager, userDataManager, settingsManager, casino, payday);
 registerMiscCommands(commandManager);
+
+payday.setAnnouncementFunction(message => chatClient.say(config.channel, message));

@@ -32,17 +32,32 @@ export default class SettingsManager {
         this.setBase("casino.zero.fineChance", 0.3);
         this.setBase("casino.zero.fineSize", 1);
 
+        this.setBase("payday.excluded", false);
+        this.setBase("payday.maxIdleTime", 10 * 60 * 1000);
+        this.setBase("payday.payAmount", 25);
+
         this.setBase("command.setting.allowed", false);
         this.setBase("command.group.allowed", false);
         this.setBase("command.mint.allowed", false);
         this.setBase("command.tax.allowed", false);
+        this.setBase("command.taxall.allowed", false);
+        this.setBase("command.welfare.allowed", false);
+        this.setBase("command.payday.allowed", false);
         this.setBase("command.top.maxCount", 15);
         this.setBase("command.top.excluded", true);
         this.setBase("command.idle.maxCount", 15);
+        this.setBase("command.idle.excluded", true);
+
+        this.setGroup("subscriber", "payday.maxIdleTime", 15 * 60 * 1000);
+        this.setGroup("subscriber", "payday.payAmount", 50);
+
         this.setGroup("nojackpot", "casino.jackpotChance", 0);
 
         this.setGroup("admin", "command.mint.allowed", true);
         this.setGroup("admin", "command.tax.allowed", true);
+        this.setGroup("admin", "command.taxall.allowed", true);
+        this.setGroup("admin", "command.welfare.allowed", true);
+        this.setGroup("admin", "command.payday.allowed", true);
         this.setGroup("admin", "command.points.other.allowed", true);
         this.setGroup("admin", "command.top.maxCount", 100);
         this.setGroup("admin", "command.idle.maxCount", 100);
@@ -51,13 +66,20 @@ export default class SettingsManager {
         this.setGroup("admin", "command.group.other.allowed", true);
         this.setGroup("admin", "command.group.modify.allowed", true);
         this.setGroup("admin", "command.group.modify.protected", true);
+        this.setGroup("admin", "command.taxall.excluded", true);
 
         this.setGroup("bot", "commandManager.ignore", true);
         this.setGroup("bot", "command.idle.excluded", true);
+        this.setGroup("bot", "command.taxall.excluded", true);
+        this.setGroup("bot", "command.welfare.excluded", true);
+        this.setGroup("bot", "payday.excluded", true);
 
         this.setGroup("virtual", "commandManager.ignore", true);
         this.setGroup("virtual", "command.top.excluded", true);
         this.setGroup("virtual", "command.idle.excluded", true);
+        this.setGroup("virtual", "command.taxall.excluded", true);
+        this.setGroup("virtual", "command.welfare.excluded", true);
+        this.setGroup("virtual", "payday.excluded", true);
     }
 
     setBase(key, value) {

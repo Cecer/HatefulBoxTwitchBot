@@ -1,9 +1,14 @@
 import fs from "node:fs";
 
-export default (commandManager, userDataManager, settingsManager, casino) => {
+const TAX_VOID_USER_ID = -3;
+
+export default (commandManager, userDataManager, settingsManager, casino, payday) => {
     register_points(commandManager, userDataManager, settingsManager);
     register_top(commandManager, userDataManager, settingsManager);
     register_pay(commandManager, userDataManager);
+    register_taxall(commandManager, userDataManager, settingsManager, casino);
+    register_welfare(commandManager, userDataManager, settingsManager);
+    register_payday(commandManager, payday);
 
     register_mint(commandManager, userDataManager);
     register_tax(commandManager, userDataManager);
@@ -31,7 +36,7 @@ function register_points(commandManager, userDataManager, settingsManager) {
             let targetData = userDataManager.getUserByUsername(target);
             if (!targetData) {
                 replyFunc(`I don't know of anyone by the name: ${target}`);
-                return
+                return;
             }
 
             if (userData === targetData) {
@@ -247,19 +252,142 @@ function register_jackpot(commandManager, casino) {
         .register();
 }
 
-// function register_migrate(commandManager, userDataManager) {
-//     commandManager.newBuilder("migrate")
-//         .senderRateLimit(2000)
-//         .handler((userData, args, replyFunc) => {
-//             let logs = [];
-//             let json = JSON.parse(fs.readFileSync("./data/migration.json", {encoding: "utf8"}));
-//             for (let username of Object.keys(json)) {
-//                 let userData = userDataManager.getUserByUsername(username)
-//                 userData.points = json[username];
-//                 userData.setSettingOverride("command.top.excluded", false);
-//                 logs.push(`${username}: ${json[username]}`);
-//             }
-//             replyFunc(`Migrated points: ${logs.join(", ")}`);
-//         })
-//         .register();
-// }
+function register_taxall(commandManager, userDataManager, settingsManager, casino) {
+    commandManager.newBuilder("taxall")
+        .handler((userData, args, replyFunc) => {
+            if (args.length < 2) {
+                replyFunc(`Usage: !taxall <amount> <recipient>`);
+                return;
+            }
+
+            let amount = args.shift();
+            let amountFunc;
+            if (amount.endsWith("%")) {
+                amount = amount.substring(0, amount.length - 1);
+                if (Number.isNaN(amount)) {
+                    replyFunc(`Usage: !taxall <amount> <recipient>`);
+                    return;
+                }
+
+                if (amount < 0 || amount > 100) {
+                    replyFunc(`Error: Invalid amount percentage. Must be in the range of 0-100 inclusive.`);
+                    return;
+                }
+                amountFunc = points => points * amount;
+            } else {
+                amount = parseInt(amount);
+                if (Number.isNaN(amount)) {
+                    replyFunc(`Usage: !taxall <amount> <recipient>`);
+                    return;
+                }
+                if (amount <= 0) {
+                    replyFunc(`Error: Invalid amount. Must be positive.`);
+                    return;
+                }
+                amountFunc = points => amount;
+            }
+
+            let recipient = args.shift();
+            let recipientData;
+            let logFunc;
+            switch (recipient) {
+                case "void": {
+                    recipientData = userDataManager.ensureUser(TAX_VOID_USER_ID);
+                    logFunc = (fromData, points) => {
+                        replyFunc(`Sent ${points} points from ${fromData.username} into a blackhole`);
+                    };
+                    break;
+                }
+                case "jackpot": {
+                    recipientData = casino.jackpotBankUserData;
+                    logFunc = (fromData, points) => {
+                        replyFunc(`Sent ${points} from ${fromData.username} into the casino jackpot`);
+                    };
+                    break;
+                }
+                default: {
+                    if (recipient.startsWith("@")) {
+                        recipient = recipient.substring(1);
+                        recipientData = userDataManager.getUserByUsername(recipient);
+                        if (!recipientData) {
+                            replyFunc(`Error: I don't know of anyone by the name: ${recipient}`);
+                            return;
+                        }
+                        logFunc = (fromData, points) => {
+                            replyFunc(`Sent ${points} from ${fromData.username} to ${recipientData.username}`);
+                        };
+                        break;
+                    }
+                    replyFunc(`Error: I don't know what you mean by ${recipient}. WHere do you want to send the points exactly? Examples: void, jackpot, @username`)
+                    return;
+                }
+            }
+
+            let taxableUsers = userDataManager.getAll()
+                    .filter(d => !settingsManager.getSetting(d, "command.taxall.excluded"))
+                    .filter(d => d.points > 1000)
+                    .filter(d => d !== recipientData);
+
+            let total = 0;
+            for (let data of taxableUsers) {
+                let userAmount = Math.ceil(data.points - 1000);
+                if (userAmount <= 0) {
+                    continue;
+                }
+                userAmount = amountFunc(userAmount);
+
+                total += userAmount;
+                data.points -= userAmount;
+                logFunc(data, userAmount);
+            }
+            replyFunc(`Total tax collected: ${total}`);
+        })
+        .register();
+}
+
+function register_welfare(commandManager, userDataManager, settingsManager) {
+    commandManager.newBuilder("welfare")
+        .handler((userData, args, replyFunc) => {
+            if (args.length < 1) {
+                replyFunc(`Usage: !welfare <amount>`);
+                return;
+            }
+
+            let amount = args.shift();
+            amount = parseInt(amount);
+            if (Number.isNaN(amount)) {
+                replyFunc(`Usage: !welfare <amount>`);
+                return;
+            }
+            if (amount <= 0) {
+                replyFunc(`Error: Invalid amount. Must be positive.`);
+                return;
+            }
+
+            let poorUsers = userDataManager.getAll()
+                    .filter(d => !settingsManager.getSetting(d, "command.welfare.excluded"))
+                    .filter(d => d.points < 1000);
+
+            let total = 0;
+            for (let data of poorUsers) {
+                let userAmount = Math.floor(1000 - data.points);
+                if (userAmount <= 0) {
+                    continue;
+                }
+                data.points += userAmount;
+                total += userAmount;
+                replyFunc(`Granted ${userAmount} points to ${data.username} because they are poor.`);
+            }
+            replyFunc(`Total given: ${total}`);
+        })
+        .register();
+}
+
+function register_payday(commandManager, payday) {
+    commandManager.newBuilder("payday")
+        .handler((userData, args, replyFunc) => {
+            replyFunc(`Forcing a bonus payday!`);
+            payday.processNow();
+        })
+        .register();
+}
