@@ -11,7 +11,7 @@ export default class SettingsManager {
         this.#baseSettings = new BetterMap();
         this.#groupOverrides = new BetterMap();
 
-        this.groupSearchOrder = ["admin", "bot", "virtual", "broadcaster", "moderator", "vip", "subscriber"];
+        this.groupSearchOrder = ["nojackpot", "admin", "bot", "virtual", "broadcaster", "moderator", "vip", "subscriber"];
         for (let group of this.groupSearchOrder) {
             this.#groupOverrides.set(group, new BetterMap());
         }
@@ -39,6 +39,7 @@ export default class SettingsManager {
         this.setBase("command.top.maxCount", 15);
         this.setBase("command.top.excluded", true);
         this.setBase("command.idle.maxCount", 15);
+        this.setGroup("nojackpot", "casino.jackpotChance", 0);
 
         this.setGroup("admin", "command.mint.allowed", true);
         this.setGroup("admin", "command.tax.allowed", true);
