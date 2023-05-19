@@ -25,7 +25,7 @@ export default class SettingsManager {
         this.setBase("casino.winChance", 0.4001);
         this.setBase("casino.minJackpotBet", 10);
         this.setBase("casino.minJackpotRatio", 3.0);
-        this.setBase("casino.jackpotChance", 0.025);
+        this.setBase("casino.jackpotChance", 0.01);
         this.setBase("casino.jackpotFillRatio", 0.25);
         this.setBase("casino.zero.pityChance", 0.4);
         this.setBase("casino.zero.pitySize", 1);
