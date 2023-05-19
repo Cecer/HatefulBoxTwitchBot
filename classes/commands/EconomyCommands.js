@@ -55,6 +55,10 @@ function register_top(commandManager, userDataManager, settingsManager) {
             let amount = 10;
             if (args.length >= 1) {
                 amount = parseInt(args.shift());
+                if (Number.isNaN(amount)) {
+                    replyFunc(`Usage: !top <amount>`);
+                    return;
+                }
             }
 
             if (amount < 0) {
@@ -273,7 +277,7 @@ function register_taxall(commandManager, userDataManager, settingsManager, casin
                     replyFunc(`Error: Invalid amount percentage. Must be in the range of 0-100 inclusive.`);
                     return;
                 }
-                amountFunc = points => points * amount;
+                amountFunc = points => Math.floor(points * (amount / 100));
             } else {
                 amount = parseInt(amount);
                 if (Number.isNaN(amount)) {
@@ -338,6 +342,7 @@ function register_taxall(commandManager, userDataManager, settingsManager, casin
 
                 total += userAmount;
                 data.points -= userAmount;
+                recipientData.points += userAmount;
                 logFunc(data, userAmount);
             }
             replyFunc(`Total tax collected: ${total}`);
@@ -386,7 +391,7 @@ function register_welfare(commandManager, userDataManager, settingsManager) {
 function register_payday(commandManager, payday) {
     commandManager.newBuilder("payday")
         .handler((userData, args, replyFunc) => {
-            replyFunc(`Forcing a bonus payday!`);
+            replyFunc(`Forcing a bonus pay day!`);
             payday.processNow();
         })
         .register();
