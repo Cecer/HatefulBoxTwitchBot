@@ -37,6 +37,9 @@ export default class UserDataManager {
      * @returns {UserData}
      */
     getUserById(userId) {
+        if (typeof userId === "string") {
+            userId = parseInt(userId);
+        }
         return this.#usersById.get(userId);
     }
     /**
@@ -53,6 +56,9 @@ export default class UserDataManager {
      * @param {string} username 
      */
     updateUsername(userId, username) {
+        if (typeof userId === "string") {
+            userId = parseInt(userId);
+        }
         username = username.toLowerCase();
 
         let userData = this.ensureUser(userId);
@@ -70,6 +76,10 @@ export default class UserDataManager {
      * @returns {UserData}
      */
     ensureUser(userId) {
+        if (typeof userId === "string") {
+            userId = parseInt(userId);
+        }
+
         return this.#usersById.computeIfAbsent(userId, () => {
             let userData = new UserData(userId);
             this.#usersByUsername.set(userData.username, userData);
