@@ -48,9 +48,9 @@ export default class Payday {
                 taxUser.points -= taxRefund;
                 console.log(`${new Date().toISOString()} ${chalk.green(`[TAX REFUND]`)} ${chalk.gray(` Refunding ${taxRefund} points with ${taxRefundShare} each`)}`);
             } else {
-                let decay = taxUser.points * 0.05;
+                let decay = Math.floor(taxUser.points * 0.05);
                 taxUser.points -= decay;
-                console.log(`${new Date().toISOString()} ${chalk.green(`[TAX DECAY]`)} ${chalk.gray(` Removing ${taxUser.points} points from the economy...`)}`);
+                console.log(`${new Date().toISOString()} ${chalk.green(`[TAX DECAY]`)} ${chalk.gray(` Removing ${decay} points from the economy...`)}`);
             }
         }
 
