@@ -2,18 +2,28 @@ import dateFns from "date-fns";
 
 
 export default (commandManager, userDataManager, settingsManager) => {
-    register_settings(commandManager, settingsManager);
+    register_settings(commandManager, userDataManager, settingsManager);
     register_group(commandManager, userDataManager, settingsManager);
     register_followage(commandManager);
     register_accountage(commandManager);
     register_seen(commandManager, userDataManager);
 }
 
-function register_settings(commandManager, settingsManager) {
+function register_settings(commandManager, userDataManager, settingsManager) {
     commandManager.newBuilder("setting")
         .addAlias("settings")
         .handler((userData, args, replyFunc) => {
-            let value = settingsManager.getSetting(userData, args[0]);
+            let targetData = userData;
+            let target = args.shift();
+            if (target) {
+                targetData = userDataManager.getUserByUsername(target);
+                if (!targetData) {
+                    replyFunc(`I don't know of anyone by the name: ${target}`);
+                    return;
+                }
+            }
+            let key = args.shift();
+            let value = settingsManager.getSetting(targetData, key);
             replyFunc(`Value: ${value}`);
         })
         .register();
