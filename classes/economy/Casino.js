@@ -30,7 +30,7 @@ export default class Casino {
     rollJackpot(userData, betAmount) {
         let minBet = this.#settingsManager.getSetting(userData, "casino.minJackpotBet");
         let minRatio = this.#settingsManager.getSetting(userData, "minJackpotRatio");
-        let jackpotChance = this.#settingsManager.getSetting(userData, "casino.winChance");
+        let jackpotChance = this.#settingsManager.getSetting(userData, "casino.jackpotChance");
 
         if (betAmount < minBet) {
             // No tiny bets winning jackpot
