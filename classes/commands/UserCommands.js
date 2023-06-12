@@ -17,7 +17,7 @@ function register_settings(commandManager, userDataManager, settingsManager) {
             let targetData = userData;
             let target = args.shift();
             if (target) {
-                targetData = userDataManager.getUserByUsername(target);
+                targetData = userDataManager.getUserByUsername(target, settingsManager.getSetting(userData, "command.setting.allowVirtual", false));
                 if (!targetData) {
                     replyFunc(`I don't know of anyone by the name: ${target}`);
                     return;
@@ -38,7 +38,7 @@ function register_group(commandManager, userDataManager, settingsManager) {
             if (settingsManager.getSetting(userData, "command.group.other.allowed", false)) {
                 let target = args.shift();
                 if (target) {
-                    targetData = userDataManager.getUserByUsername(target);
+                    targetData = userDataManager.getUserByUsername(target, settingsManager.getSetting(userData, "command.group.allowVirtual", false));
                     if (!targetData) {
                         replyFunc(`I don't know of anyone by the name: ${target}`);
                         return;
@@ -128,7 +128,7 @@ function register_seen(commandManager, userDataManager) {
         .addAlias("lastseen")
         .handler(async (userData, args, replyFunc) => {
             let target = args.shift();
-            let targetData = userDataManager.getUserByUsername(target);
+            let targetData = userDataManager.getUserByUsername(target, false);
             if (!targetData) {
                 replyFunc(`I don't know of anyone by the name: ${target}`);
                 return;

@@ -67,6 +67,12 @@ export default class SettingsManager {
         this.setGroup("admin", "command.group.modify.allowed", true);
         this.setGroup("admin", "command.group.modify.protected", true);
         this.setGroup("admin", "command.taxall.excluded", true);
+        this.setGroup("admin", "command.points.other.allowVirtual", true);
+        this.setGroup("admin", "command.pay.allowVirtual", true);
+        this.setGroup("admin", "command.tax.allowVirtual", true);
+        this.setGroup("admin", "command.taxall.allowVirtual", true);
+        this.setGroup("admin", "command.setting.allowVirtual", true);
+        this.setGroup("admin", "command.group.allowVirtual", true);
 
         this.setGroup("bot", "commandManager.ignore", true);
         this.setGroup("bot", "command.idle.excluded", true);

@@ -36,19 +36,28 @@ export default class UserDataManager {
      * @param {number} userId 
      * @returns {UserData}
      */
-    getUserById(userId) {
+    getUserById(userId, allowVirtual = false) {
         if (typeof userId === "string") {
             userId = parseInt(userId);
         }
-        return this.#usersById.get(userId);
+        let data = this.#usersById.get(userId);
+        if ((data?.groups?.has("virtual") ?? false) && !allowVirtual) {
+            data = undefined;
+        }
+        return data;
     }
     /**
      * @param {string} username 
+     * @param {boolean} allowVirtual
      * @returns {UserData}
      */
-    getUserByUsername(username) {
+    getUserByUsername(username, allowVirtual = false) {
         username = username.toLowerCase();
-        return this.#usersByUsername.get(username);
+        let data = this.#usersByUsername.get(username);
+        if ((data?.groups?.has("virtual") ?? false) && !allowVirtual) {
+            data = undefined;
+        }
+        return data;
     }
 
     /**
@@ -67,7 +76,7 @@ export default class UserDataManager {
 
             console.log(`${new Date().toISOString()} ${chalk.blue(`[UserData]`)} ${chalk.gray(`Updating username from ${userData.username} to ${username}`)}`);
             userData.username = username;
-            this.#usersByUsername.set(username, userData);
+            this.#usersByUsername.set(username.toLowerCase(), userData);
         }
     }
 
@@ -82,7 +91,7 @@ export default class UserDataManager {
 
         return this.#usersById.computeIfAbsent(userId, () => {
             let userData = new UserData(userId);
-            this.#usersByUsername.set(userData.username, userData);
+            this.#usersByUsername.set(userData.username.toLowerCase(), userData);
             console.log(`${new Date().toISOString()} ${chalk.blue(`[UserData]`)} ${chalk.gray(`Loaded ${userData.userId} (${userData.username})`)}`);
             return userData;
         });

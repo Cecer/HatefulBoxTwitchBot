@@ -5,13 +5,13 @@ const TAX_VOID_USER_ID = -3;
 export default (commandManager, userDataManager, settingsManager, casino, payday) => {
     register_points(commandManager, userDataManager, settingsManager);
     register_top(commandManager, userDataManager, settingsManager);
-    register_pay(commandManager, userDataManager);
+    register_pay(commandManager, userDataManager, settingsManager);
     register_taxall(commandManager, userDataManager, settingsManager, casino);
     register_welfare(commandManager, userDataManager, settingsManager);
     register_payday(commandManager, payday);
 
     register_mint(commandManager, userDataManager);
-    register_tax(commandManager, userDataManager);
+    register_tax(commandManager, userDataManager, settingsManager);
 
     register_gamble(commandManager, settingsManager, casino);
     register_jackpot(commandManager, casino);
@@ -33,7 +33,7 @@ function register_points(commandManager, userDataManager, settingsManager) {
                 }
             }
 
-            let targetData = userDataManager.getUserByUsername(target);
+            let targetData = userDataManager.getUserByUsername(target, settingsManager.getSetting(userData, "command.points.other.allowVirtual", false));
             if (!targetData) {
                 replyFunc(`I don't know of anyone by the name: ${target}`);
                 return;
@@ -89,7 +89,7 @@ function register_top(commandManager, userDataManager, settingsManager) {
         .register();
 }
 
-function register_pay(commandManager, userDataManager) {
+function register_pay(commandManager, userDataManager, settingsManager) {
     commandManager.newBuilder("pay")
         .senderRateLimit(1000)
         .handler((userData, args, replyFunc) => {
@@ -99,7 +99,7 @@ function register_pay(commandManager, userDataManager) {
             }
 
             let target = args.shift();
-            let targetData = userDataManager.getUserByUsername(target);
+            let targetData = userDataManager.getUserByUsername(target, settingsManager.getSetting(userData, "command.pay.allowVirtual", false));
             if (!targetData) {
                 replyFunc(`I don't know of anyone by the name: ${target}`);
                 return
@@ -155,7 +155,7 @@ function register_mint(commandManager) {
         .register();
 }
 
-function register_tax(commandManager, userDataManager) {
+function register_tax(commandManager, userDataManager, settingsManager) {
     commandManager.newBuilder("tax")
         .senderRateLimit(1000)
         .handler((userData, args, replyFunc) => {
@@ -165,7 +165,7 @@ function register_tax(commandManager, userDataManager) {
             }
 
             let target = args.shift();
-            let targetData = userDataManager.getUserByUsername(target);
+            let targetData = userDataManager.getUserByUsername(target, settingsManager.getSetting(userData, "command.tax.allowVirtual", false));
             if (!targetData) {
                 replyFunc(`I don't know of anyone by the name: ${target}`);
                 return
@@ -316,7 +316,7 @@ function register_taxall(commandManager, userDataManager, settingsManager, casin
                 default: {
                     if (recipient.startsWith("@")) {
                         recipient = recipient.substring(1);
-                        recipientData = userDataManager.getUserByUsername(recipient);
+                        recipientData = userDataManager.getUserByUsername(recipient, settingsManager.getSetting(userData, "command.taxall.allowVirtual", false));
                         if (!recipientData) {
                             replyFunc(`Error: I don't know of anyone by the name: ${recipient}`);
                             return;
