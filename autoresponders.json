@@ -162,6 +162,11 @@
             "name": "sleep",
             "response": "Yeah... hateful streams at mean times. Enjoy your snoozing!",
             "senderPrefix": true
+        },
+        {
+            "name": "watchtime",
+            "response": "OOOOH YEAH!! It's finally time to watch some hatefulbox! WOOOOOOOO!",
+            "senderPrefix": true
         }
     ],
     "phrases": [
