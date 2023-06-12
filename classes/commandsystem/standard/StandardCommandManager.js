@@ -53,6 +53,11 @@ export default class StandardCommandManager extends BaseCommandManager {
             return false;
         }
 
+        if (command.isRateLimited(userData)) {
+            // Rate limited
+            return false;
+        }
+
         if (!command.isSenderAllowed(userData)) {
             // Sender not allowed to execute this command
             replyFunc(`You do not have permission to use that command!`)

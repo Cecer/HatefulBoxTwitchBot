@@ -24,26 +24,20 @@ export default class BaseCommand {
 
     isRateLimited(userData) {
         let now = Date.now();
-        if (this.#globalLastUseTimestamp + this.#globalRateLimit < now) {
+        if (this.#globalLastUseTimestamp + this.#globalRateLimit > now) {
             return true;
         }
 
-        if (this.#senderLastUseTimestamps.get(userData.userId, 0) + this.#senderRateLimit < now) {
+        if (this.#senderLastUseTimestamps.get(userData.userId, 0) + this.#senderRateLimit > now) {
             return true;
         }
 
         return false;
     }
-    applySenderRateLimit(userData, duration) {
-        let timestamp = Date.now();
-        if (duration === undefined) {
-            timestamp += duration - this.#senderRateLimit;
-        }
-        this.#senderLastUseTimestamps.set(userData.userId, timestamp);
-    }
-
+    
     handle(userData, args, replyFunc) {
-        this.applySenderRateLimit(userData);
+        this.#senderLastUseTimestamps.set(userData.userId, Date.now());
+        this.#globalLastUseTimestamp = Date.now();
         this.#handler(userData, args, replyFunc);
     }
 }

@@ -34,6 +34,11 @@ export default class PhrasePhraseManager extends BaseCommandManager {
         let matchCount = 0;
         const maxCount = this.#settingsManager.getSetting(userData, "phraseManager.maxPhrasesAtOnce");
         for (let phrase of this.#phrases) {
+            if (phrase.isRateLimited(userData)) {
+                // Rate limited
+                return false;
+            }
+            
             if (phrase.doesMessageMatch(message)) {
                 // Phrase matched!
                 console.log(`${new Date().toISOString()} [PhraseManager] Handling phrase ${phrase.pattern} for ${userData.username}`);
