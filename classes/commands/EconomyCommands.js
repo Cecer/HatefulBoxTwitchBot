@@ -294,19 +294,23 @@ function register_taxall(commandManager, userDataManager, settingsManager, casin
             let recipient = args.shift();
             let recipientData;
             let logFunc;
+            let logLines = [];
+            let recipientText;
             switch (recipient) {
                 case "void": {
                     recipientData = userDataManager.ensureUser(TAX_VOID_USER_ID);
                     logFunc = (fromData, points) => {
-                        replyFunc(`Sent ${points} points from ${fromData.username} into a blackhole`);
+                        logLines.push(`${points} from ${fromData.username}`);
                     };
+                    recipientText = "into a blackhole."
                     break;
                 }
                 case "jackpot": {
                     recipientData = casino.jackpotBankUserData;
                     logFunc = (fromData, points) => {
-                        replyFunc(`Sent ${points} from ${fromData.username} into the casino jackpot`);
+                        logLines.push(`${points} from ${fromData.username}`);
                     };
+                    recipientText = "into the casino jackpot";
                     break;
                 }
                 default: {
@@ -318,8 +322,9 @@ function register_taxall(commandManager, userDataManager, settingsManager, casin
                             return;
                         }
                         logFunc = (fromData, points) => {
-                            replyFunc(`Sent ${points} from ${fromData.username} to ${recipientData.username}`);
+                            logLines.push(`${points} from ${fromData.username}`);
                         };
+                        recipientText = `to ${recipientData.username}`;
                         break;
                     }
                     replyFunc(`Error: I don't know what you mean by ${recipient}. WHere do you want to send the points exactly? Examples: void, jackpot, @username`)
@@ -339,13 +344,30 @@ function register_taxall(commandManager, userDataManager, settingsManager, casin
                     continue;
                 }
                 userAmount = amountFunc(userAmount);
+                if (userAmount <= 0) {
+                    continue;
+                }
+
 
                 total += userAmount;
                 data.points -= userAmount;
                 recipientData.points += userAmount;
                 logFunc(data, userAmount);
             }
-            replyFunc(`Total tax collected: ${total}`);
+            if (total <= 0) {
+                replyFunc("No tax is due.");
+            } else {
+                let joinedLines;
+                if (logLines.length === 1) {
+                    joinedLines = logLines[0];
+                } else {
+                    let lastLine = logLines.pop();
+                    joinedLines = logLines.join(", ");
+                    joinedLines += ` and ${lastLine}`;
+                }
+                replyFunc(`Sent ${joinedLines} ${recipientText}`);
+                replyFunc(`Total tax collected: ${total}`);
+            }
         })
         .register();
 }
