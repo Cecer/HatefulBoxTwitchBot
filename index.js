@@ -1,15 +1,17 @@
 import fs from "node:fs";
 
-import { StaticAuthProvider } from '@twurple/auth';
-import { PubSubClient } from '@twurple/pubsub';
-import { ChatClient } from '@twurple/chat';
+import { RefreshingAuthProvider } from "@twurple/auth";
+import { PubSubClient } from "@twurple/pubsub";
+import { ChatClient } from "@twurple/chat";
 
-import UserDataManager from './classes/users/UserDataManager.js';
-import SettingsManager from './classes/SettingsManager.js';
-import StandardCommandManager from './classes/commandsystem/standard/StandardCommandManager.js';
-import PhraseCommandManager from './classes/commandsystem/phrase/PhraseCommandManager.js';
-import Casino from './classes/economy/Casino.js';
-import Payday from './classes/economy/Payday.js';
+import UserDataManager from "./classes/users/UserDataManager.js";
+import SettingsManager from "./classes/SettingsManager.js";
+import StandardCommandManager from "./classes/commandsystem/standard/StandardCommandManager.js";
+import PhraseCommandManager from "./classes/commandsystem/phrase/PhraseCommandManager.js";
+import Casino from "./classes/economy/Casino.js";
+import Payday from "./classes/economy/Payday.js";
+
+import AuthTokenManager from "./classes/auth/AuthTokenManager.js";
 
 import registerUserCommands from "./classes/commands/UserCommands.js";
 import registerEconomyCommands from "./classes/commands/EconomyCommands.js";
@@ -25,7 +27,16 @@ const payday = new Payday(userDataManager, settingsManager);
 
 const config = JSON.parse(fs.readFileSync("./config.json"));
 
-const authProvider = new StaticAuthProvider(config.auth.clientId, config.auth.accessToken);
+const authTokenManager = new AuthTokenManager(config.auth.userId, "./authToken.json", config.auth.clientId, config.auth.clientSecret, config.auth.redirectUrl);
+const authProvider = new RefreshingAuthProvider({
+    clientId: config.auth.clientId,
+    clientSecret: config.auth.clientSecret,
+    onRefresh: authTokenManager.onRefresh
+});
+
+await authTokenManager.authenticateFromFile(authProvider);
+// await authTokenManager.authenticateFromOAuth(authProvider, "");
+
 const pubSubClient = new PubSubClient({ authProvider });
 const chatClient = new ChatClient({ 
     authProvider, 
