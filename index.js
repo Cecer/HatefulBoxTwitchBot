@@ -40,7 +40,8 @@ await authTokenManager.authenticateFromFile(authProvider);
 const pubSubClient = new PubSubClient({ authProvider });
 const chatClient = new ChatClient({ 
     authProvider, 
-    channels: [config.channel]
+    channels: [config.channel],
+    isAlwaysMod: true
 });
 chatClient.connect();
 
