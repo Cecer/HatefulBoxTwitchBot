@@ -1,5 +1,4 @@
 import { RefreshingAuthProvider, exchangeCode } from '@twurple/auth';
-import { isThursday } from 'date-fns';
 import fs from 'node:fs/promises';
 
 import chalk from "chalk";

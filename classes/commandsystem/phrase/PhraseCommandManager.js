@@ -57,7 +57,7 @@ export default class PhrasePhraseManager extends BaseCommandManager {
     }
 
     #registerAutoResponders() {
-        let autoResponders = JSON.parse(fs.readFileSync("./autoresponders.json", {encoding: "utf8"}));
+        let autoResponders = JSON.parse(fs.readFileSync("./autoResponders.json", {encoding: "utf8"}));
         for (let phrase of autoResponders.phrases) {
             let patternFlags = "i";
             if ("patternFlags" in phrase) {

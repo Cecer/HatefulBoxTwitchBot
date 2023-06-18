@@ -24,7 +24,6 @@ export default class StandardCommand extends BaseCommand {
 
     isSenderAllowed(userData) {
         if (!this.#settingsManager.getSetting(userData, `command.${this.#id}.allowed`, true)) {
-            this.applySenderRateLimit(userData, 30000);
             return false;
         }
         return true;

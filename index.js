@@ -27,11 +27,11 @@ const payday = new Payday(userDataManager, settingsManager);
 
 const config = JSON.parse(fs.readFileSync("./config.json"));
 
-const authTokenManager = new AuthTokenManager(config.auth.userId, "./authToken.json", config.auth.clientId, config.auth.clientSecret, config.auth.redirectUrl);
+const authTokenManager = new AuthTokenManager(config.auth.userId, "./data/authToken.json", config.auth.clientId, config.auth.clientSecret, config.auth.redirectUrl);
 const authProvider = new RefreshingAuthProvider({
     clientId: config.auth.clientId,
     clientSecret: config.auth.clientSecret,
-    onRefresh: authTokenManager.onRefresh
+    onRefresh: (userId, tokenData) => authTokenManager.onRefresh(userId, tokenData)
 });
 
 await authTokenManager.authenticateFromFile(authProvider);
