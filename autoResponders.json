@@ -22,7 +22,7 @@
         },
         {
             "name": "modded",
-            "response": "IP is modded.hatefulbox.com --- Version 1.2.2.1 -- Link To Pack - https://www.curseforge.com/minecraft/modpacks/nomifactory/files/3641376",
+            "response": "IP is modded.hatefulbox.com --- Version 8-1.0.20 -- Link To Pack - https://www.curseforge.com/minecraft/modpacks/all-the-mods-8/files/4595005",
             "senderPrefix": true
         },
         {
@@ -81,8 +81,6 @@
             "response": "self promo time!!! https://soundcloud.com/jaxyedm",
             "senderPrefix": true
         },
-
-
         {
             "name": "mouse",
             "response": "G Pro Wireless",
@@ -286,7 +284,8 @@
         {
             "pattern": "\\bbad\\b",
             "response": "no You!",
-            "senderPrefix": false
+            "senderPrefix": false,
+            "senderRateLimit": 15000
         },
         {
             "pattern": "\\bbacon\\b",
