@@ -1,9 +1,6 @@
-export default class BaseCommandManager {
-    #settingsManager;
+import SettingsManager from "../../settings/SettingsManager.js";
 
-    constructor(settingsManager) {
-        this.#settingsManager = settingsManager;
-    }
+export default class BaseCommandManager {
 
     newBuilder() {        
         throw new Error("Abstract method not implemented!");
@@ -13,6 +10,6 @@ export default class BaseCommandManager {
     }
 
     isSenderIgnored(userData) {
-        return this.#settingsManager.getSetting(userData, "commandManager.ignore");
+        return SettingsManager.getSetting(userData, "commandManager.ignore");
     }
 }

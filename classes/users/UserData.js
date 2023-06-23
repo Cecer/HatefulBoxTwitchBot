@@ -1,6 +1,7 @@
 import fs from "node:fs";
 
-import DefaultableMap from "../utils/BetterMap.js";
+import BetterMap from "../utils/BetterMap.js";
+import InvestmentManager from "../investment/InvestmentManager.js";
 
 export default class UserData {
 
@@ -11,7 +12,10 @@ export default class UserData {
     #settingOverrides;
     
     #points;
+    #cachedNetWorth;
     #lastSeen;
+
+    #investments;
     // TODO: Achivements
 
     #needsSave;
@@ -21,10 +25,12 @@ export default class UserData {
         this.#username = `_!USER_${userId}`;
 
         this.#groups = new Set();
-        this.#settingOverrides = new DefaultableMap();
+        this.#settingOverrides = new BetterMap();
 
         this.#points = 1000;
         this.#lastSeen = 0;
+
+        this.#investments = new BetterMap();
 
         this.#needsSave = false;
 
@@ -98,6 +104,18 @@ export default class UserData {
         }
     }
 
+    recalculateNetWorth() {
+        let stockValue = 0;
+        for (let [id, amount] of this.#investments.entries()) {
+            stockValue += InvestmentManager.getValue(id) * amount;
+        }
+        this.#cachedNetWorth = this.#points + stockValue;
+        return this.#cachedNetWorth;
+    }
+    get cachedNetWorth() {
+        return this.#cachedNetWorth;
+    }
+
     get lastSeen() {
         return new Date(this.#lastSeen);
     }
@@ -106,6 +124,20 @@ export default class UserData {
         this.save();
     }
 
+
+    get investments() {
+        return this.#investments;
+    }
+    addInvestment(id, amount) {
+        id = id.toUpperCase();
+        let newAmount = Math.floor(this.#investments.getOrDefault(id, 0) + amount);
+        if (newAmount > 0) {
+            this.#investments.set(id, newAmount);
+        } else if (newAmount == 0) {
+            this.#investments.delete(id);
+        }
+        this.save();
+    }
 
 
     #load() {
@@ -132,6 +164,15 @@ export default class UserData {
 
         this.#points = data.points;
         this.#lastSeen = data.lastSeen;
+
+        if ("investments" in data) {
+            for (let id in data.investments) {
+                let amount = data.investments[id];
+                if (amount > 0) {
+                    this.#investments.set(id, amount);
+                }
+            }
+        }
     }
 
     save() {
@@ -147,7 +188,8 @@ export default class UserData {
                     settingOverrides: Object.fromEntries(this.#settingOverrides),
         
                     points: this.#points,
-                    lastSeen: this.#lastSeen
+                    lastSeen: this.#lastSeen,
+                    investments: Object.fromEntries(this.#investments)
                 };
                 data = JSON.stringify(data, null, "    ");
                 fs.writeFileSync(`./data/users/${this.#userId}.json`, data, {encoding: "utf8"});

@@ -1,44 +1,48 @@
 import dateFns from "date-fns";
 
+import SettingsManager from "../../../settings/SettingsManager.js";
+import StandardCommandManager from "../StandardCommandManager.js";
+import UserDataManager from "../../../users/UserDataManager.js";
 
-export default (commandManager, userDataManager, settingsManager) => {
-    register_settings(commandManager, userDataManager, settingsManager);
-    register_group(commandManager, userDataManager, settingsManager);
-    register_followage(commandManager);
-    register_accountage(commandManager);
-    register_seen(commandManager, userDataManager);
-    register_idle(commandManager, userDataManager, settingsManager)
+
+export default () => {
+    register_settings();
+    register_group();
+    register_followage();
+    register_accountage();
+    register_seen();
+    register_idle()
 }
 
-function register_settings(commandManager, userDataManager, settingsManager) {
-    commandManager.newBuilder("setting")
+function register_settings() {
+    StandardCommandManager.newBuilder("setting")
         .addAlias("settings")
         .handler((userData, args, replyFunc) => {
             let targetData = userData;
             let target = args.shift();
             if (target) {
-                targetData = userDataManager.getUserByUsername(target, settingsManager.getSetting(userData, "command.setting.allowVirtual", false));
+                targetData = UserDataManager.getUserByUsername(target, SettingsManager.getSetting(userData, "command.setting.allowVirtual", false));
                 if (!targetData) {
                     replyFunc(`I don't know of anyone by the name: ${target}`);
                     return;
                 }
             }
             let key = args.shift();
-            let value = settingsManager.getSetting(targetData, key);
+            let value = SettingsManager.getSetting(targetData, key);
             replyFunc(`Value: ${value}`);
         })
         .register();
 }
 
-function register_group(commandManager, userDataManager, settingsManager) {
-    commandManager.newBuilder("group")
+function register_group() {
+    StandardCommandManager.newBuilder("group")
         .addAlias("groups")
         .handler((userData, args, replyFunc) => {
             let targetData = userData;
-            if (settingsManager.getSetting(userData, "command.group.other.allowed", false)) {
+            if (SettingsManager.getSetting(userData, "command.group.other.allowed", false)) {
                 let target = args.shift();
                 if (target) {
-                    targetData = userDataManager.getUserByUsername(target, settingsManager.getSetting(userData, "command.group.allowVirtual", false));
+                    targetData = UserDataManager.getUserByUsername(target, SettingsManager.getSetting(userData, "command.group.allowVirtual", false));
                     if (!targetData) {
                         replyFunc(`I don't know of anyone by the name: ${target}`);
                         return;
@@ -64,12 +68,12 @@ function register_group(commandManager, userDataManager, settingsManager) {
                     replyFunc(`${replyPrefix} not a member of ${group}`);
                 }
             } else {
-                if (!settingsManager.getSetting(userData, "command.group.modify.allowed", false)) {
+                if (!SettingsManager.getSetting(userData, "command.group.modify.allowed", false)) {
                     replyFunc("You do not have permission to modify group memberships!");
                     return;
                 }
 
-                if (settingsManager.getGroupSettingOverride(group, "command.group.modify.protected", false)) {
+                if (SettingsManager.getGroupSettingOverride(group, "command.group.modify.protected", false)) {
                     replyFunc("That group is protected and must be granted manually!");
                     return;
                 }
@@ -101,8 +105,8 @@ function register_group(commandManager, userDataManager, settingsManager) {
         .register();
 }
 
-function register_followage(commandManager) {
-    commandManager.newBuilder("followage")
+function register_followage() {
+    StandardCommandManager.newBuilder("followage")
         .senderRateLimit(60000)
         .handler(async (userData, args, replyFunc) => {
             let response = await fetch(`https://beta.decapi.me/twitch/followage/hatefulbox/${userData.username}`);
@@ -112,8 +116,8 @@ function register_followage(commandManager) {
         .register();
 }
 
-function register_accountage(commandManager) {
-    commandManager.newBuilder("accountage")
+function register_accountage() {
+    StandardCommandManager.newBuilder("accountage")
         .senderRateLimit(60000)
         .handler(async (userData, args, replyFunc) => {
             let response = await fetch(`https://beta.decapi.me/twitch/creation/${userData.username}`);
@@ -123,12 +127,12 @@ function register_accountage(commandManager) {
         .register();
 }
 
-function register_seen(commandManager, userDataManager) {
-    commandManager.newBuilder("seen")
+function register_seen() {
+    StandardCommandManager.newBuilder("seen")
         .addAlias("lastseen")
         .handler(async (userData, args, replyFunc) => {
             let target = args.shift();
-            let targetData = userDataManager.getUserByUsername(target, false);
+            let targetData = UserDataManager.getUserByUsername(target, false);
             if (!targetData) {
                 replyFunc(`I don't know of anyone by the name: ${target}`);
                 return;
@@ -145,11 +149,11 @@ function register_seen(commandManager, userDataManager) {
         .register();
 }
 
-function register_idle(commandManager, userDataManager, settingsManager) {
-    commandManager.newBuilder("idle")
+function register_idle() {
+    StandardCommandManager.newBuilder("idle")
         .senderRateLimit(10000)
         .handler((userData, args, replyFunc) => {
-            if (settingsManager.getSetting(userData, "command.idle.excluded")) {
+            if (SettingsManager.getSetting(userData, "command.idle.excluded")) {
                 replyFunc("Oh you're new to the idle game! Welcome aboard. You are now taking part in the game.");
                 userData.setSettingOverride("command.idle.excluded", false);
                 return;
@@ -167,14 +171,14 @@ function register_idle(commandManager, userDataManager, settingsManager) {
             if (amount < 0) {
                 amount = 0;
             } else {
-                let max = settingsManager.getSetting(userData, "command.idle.maxCount");
+                let max = SettingsManager.getSetting(userData, "command.idle.maxCount");
                 if (amount > max) {
                     amount = max;
                 }
             }
 
-            let allUsers = userDataManager.getAll()
-                .filter(data => !settingsManager.getSetting(data, "command.idle.excluded"))
+            let allUsers = UserDataManager.getAll()
+                .filter(data => !SettingsManager.getSetting(data, "command.idle.excluded"))
                 .sort((a, b) => a.lastSeen - b.lastSeen);
             let topUsers = allUsers.slice(0, amount);
             

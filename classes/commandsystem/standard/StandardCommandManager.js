@@ -2,22 +2,21 @@ import fs from "node:fs";
 
 import BaseCommandManager from "../base/BaseCommandManager.js";
 import StandardCommandBuilder from "./StandardCommandBuilder.js";
+import SettingsManager from "../../settings/SettingsManager.js";
 
-export default class StandardCommandManager extends BaseCommandManager {
-    
-    #settingsManager;
+class StandardCommandManager extends BaseCommandManager {
+
     #commands;
 
-    constructor(settingsManager) {
-        super(settingsManager);
-        this.#settingsManager = settingsManager;
+    constructor() {
+        super();
         this.#commands = new Map();
 
         this.#registerAutoResponders();
     }
 
     newBuilder(name) {
-        return new StandardCommandBuilder(name, c => this.#register(c), this.#settingsManager);
+        return new StandardCommandBuilder(name, c => this.#register(c), SettingsManager);
     }
 
     #register(command) {
@@ -32,7 +31,7 @@ export default class StandardCommandManager extends BaseCommandManager {
     handle(userData, message, replyFunc) {
         message = message.trim();
         
-        let prefix = this.#settingsManager.getSetting(userData, "commandManager.prefix");
+        let prefix = SettingsManager.getSetting(userData, "commandManager.prefix");
         if (message.indexOf(prefix) !== 0) {
             // Not a command
             return false;
@@ -55,12 +54,13 @@ export default class StandardCommandManager extends BaseCommandManager {
 
         if (command.isRateLimited(userData)) {
             // Rate limited
+            replyFunc(`Slow down! You cannot use that command again yet!`);
             return false;
         }
 
         if (!command.isSenderAllowed(userData)) {
             // Sender not allowed to execute this command
-            replyFunc(`You do not have permission to use that command!`)
+            replyFunc(`You do not have permission to use that command!`);
             return false;
         }
 
@@ -72,7 +72,7 @@ export default class StandardCommandManager extends BaseCommandManager {
         } catch (e) {
             replyFunc(`Something went wrong with that command! IT'S ALL YOUR FAULT!`);
             //replyFunc(`Something went wrong with that command! Sorry about that :(`)
-            console.error("${new Date().toISOString()} [CommandManager] Error handling command: ", e);
+            console.error(`${new Date().toISOString()} [CommandManager] Error handling command: `, e);
         }
         return true;
     }
@@ -105,3 +105,5 @@ export default class StandardCommandManager extends BaseCommandManager {
         }
     }
 }
+
+export default new StandardCommandManager();

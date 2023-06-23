@@ -1,19 +1,14 @@
 import chalk from "chalk";
+import TwitchManager from "../twitch/TwitchManager.js";
+import UserDataManager from "../users/UserDataManager.js";
+import SettingsManager from "../settings/SettingsManager.js";
 
 const TAX_VOID_USER_ID = -3;
 const INTERVAL_TIME = 5 * 60 * 1000;
 
-export default class Payday {
-    
-    #userDataManager;
-    #settingsManager;
-    #announcementFunction;
+class PaydayManager {
 
-    constructor(userDataManager, settingsManager) {
-        this.#userDataManager = userDataManager;
-        this.#settingsManager = settingsManager;
-        this.#announcementFunction = () => {};
-
+    constructor() {
         let delay = INTERVAL_TIME - (Date.now() % INTERVAL_TIME);
         setTimeout(() => {
             this.processNow();
@@ -21,16 +16,12 @@ export default class Payday {
         }, delay);
     }
 
-    setAnnouncementFunction(func) {
-        this.#announcementFunction = func;
-    }
-
-    processNow() {
+    processNow(forced) {
         let totalUsers = 0;
         let totalPoints = 0;
-        let payableUsers = this.#userDataManager.getAll()
-            .filter(d => !this.#settingsManager.getSetting(d, "payday.excluded"))
-            .filter(d => d.lastSeen > (Date.now() - this.#settingsManager.getSetting(d, "payday.maxIdleTime")));
+        let payableUsers = UserDataManager.getAll()
+            .filter(d => !SettingsManager.getSetting(d, "payday.excluded"))
+            .filter(d => d.lastSeen > (Date.now() - SettingsManager.getSetting(d, "payday.maxIdleTime")));
 
         if (payableUsers.length === 0) {
             return;
@@ -40,23 +31,23 @@ export default class Payday {
         let taxRefundShare = 0;
         let taxActionRand = Math.random();
         if (taxActionRand > 0.8) {
-            let taxUser = this.#userDataManager.ensureUser(TAX_VOID_USER_ID);
+            let taxUser = UserDataManager.ensureUser(TAX_VOID_USER_ID);
             if (taxActionRand > 0.98) {
                 taxRefund = taxUser.points * Math.random();
                 taxRefundShare = Math.floor(taxRefund / payableUsers.length);
                 taxRefund = taxRefundShare * payableUsers.length;
                 taxUser.points -= taxRefund;
-                console.log(`${new Date().toISOString()} ${chalk.green(`[TAX REFUND]`)} ${chalk.gray(`Refunding ${taxRefund} points with ${taxRefundShare} each`)}`);
+                console.log(`${new Date().toISOString()} ${chalk.green(`[TAX REFUND]`)} ${chalk.gray(`Refunding \$${taxRefund} with \$${taxRefundShare} each`)}`);
             } else {
                 let decay = Math.floor(taxUser.points * 0.05);
                 taxUser.points -= decay;
-                console.log(`${new Date().toISOString()} ${chalk.green(`[TAX DECAY]`)} ${chalk.gray(`Removing ${decay} points from the economy...`)}`);
+                console.log(`${new Date().toISOString()} ${chalk.green(`[TAX DECAY]`)} ${chalk.gray(`Removing \$${decay} from the economy...`)}`);
             }
         }
 
         payableUsers
             .forEach(d => {
-                let payAmount = this.#settingsManager.getSetting(d, "payday.payAmount");
+                let payAmount = SettingsManager.getSetting(d, "payday.payAmount");
                 if (payAmount !== 0) {
                     let randomMultiplier = (Math.random() * 0.2) + 0.9;
                     payAmount = Math.floor(payAmount * randomMultiplier);
@@ -64,14 +55,16 @@ export default class Payday {
                     payAmount += taxRefundShare;
                     d.points += payAmount;
                     totalUsers++;
-                    console.log(`${new Date().toISOString()} ${chalk.green(`[PAY DAY]`)} ${chalk.gray(`Paid ${payAmount} points to ${d.username}`)}`);
+                    console.log(`${new Date().toISOString()} ${chalk.green(`[PAY DAY]`)} ${chalk.gray(`Paid \$${payAmount} to ${d.username}`)}`);
                 }
             });
         if (totalUsers > 0 && totalPoints > 0) {
-            this.#announcementFunction(`[PAY DAY] Paid a total of ${totalPoints} to ${totalUsers} users!`);
+            TwitchManager.sendChatMesage(`[PAY DAY] Paid a total of \$${totalPoints} to ${totalUsers} users!`);
             if (taxRefund > 0) {
-                this.#announcementFunction(`[TAX REFUND] Refunded ${taxRefund} points!`);
+                TwitchManager.sendChatMesage(`[TAX REFUND] Refunded \$${taxRefund}!`);
             }
         }
     }
 }
+
+export default new PaydayManager();

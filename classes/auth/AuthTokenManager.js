@@ -1,9 +1,8 @@
 import { RefreshingAuthProvider, exchangeCode } from '@twurple/auth';
 import fs from 'node:fs/promises';
-
 import chalk from "chalk";
 
-export default class AuthTokenManager {
+class AuthTokenManager {
 
     #userId;
     #savePath;
@@ -11,12 +10,12 @@ export default class AuthTokenManager {
     #clientSecret;
     #redirectUrl;
 
-    constructor(userId, savePath, clientId, clientSecret, redirectUrl) {
-        this.#userId = userId;
-        this.#savePath = savePath;
-        this.#clientId = clientId;
-        this.#clientSecret = clientSecret;
-        this.#redirectUrl = redirectUrl;
+    constructor(config) {
+        this.#userId = config.auth.userId;
+        this.#savePath = "./data/authToken.json";
+        this.#clientId = config.auth.clientId;
+        this.#clientSecret = config.auth.clientSecret;
+        this.#redirectUrl = config.auth.redirectUrl;
     }
 
     /**
@@ -49,3 +48,7 @@ export default class AuthTokenManager {
         await fs.writeFile(this.#savePath, tokenDataJson, "utf8");
     }
 }
+
+
+const config = JSON.parse(await fs.readFile("./config.json"));
+export default new AuthTokenManager(config);

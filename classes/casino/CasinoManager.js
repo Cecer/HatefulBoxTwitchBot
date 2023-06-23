@@ -1,26 +1,23 @@
 import chalk from "chalk";
+import UserDataManager from "../users/UserDataManager.js";
+import SettingsManager from "../settings/SettingsManager.js";
 
 const MAIN_BANK_USER_ID = -1;
 const JACKPOT_BANK_USER_ID = -2;
 
-export default class Casino {
-    
-    #userDataManager;
-    #settingsManager;
+class CasinoManager {
 
     #mainBankUser;
     #jackpotBankUser;
 
-    constructor(userDataManager, settingsManager) {
-        this.#userDataManager = userDataManager;
-        this.#settingsManager = settingsManager;
-        this.#mainBankUser = this.#userDataManager.ensureUser(MAIN_BANK_USER_ID);
-        this.#jackpotBankUser = this.#userDataManager.ensureUser(JACKPOT_BANK_USER_ID);
+    constructor() {
+        this.#mainBankUser = UserDataManager.ensureUser(MAIN_BANK_USER_ID);
+        this.#jackpotBankUser = UserDataManager.ensureUser(JACKPOT_BANK_USER_ID);
         this
     }
 
     rollWin(userData, betAmount) {
-        let winChance = this.#settingsManager.getSetting(userData, "casino.winChance");
+        let winChance = SettingsManager.getSetting(userData, "casino.winChance");
         let roll = Math.random();
         if (roll < winChance) {
             return true;
@@ -28,9 +25,9 @@ export default class Casino {
         return false;
     }
     rollJackpot(userData, betAmount) {
-        let minBet = this.#settingsManager.getSetting(userData, "casino.minJackpotBet");
-        let minRatio = this.#settingsManager.getSetting(userData, "minJackpotRatio");
-        let jackpotChance = this.#settingsManager.getSetting(userData, "casino.jackpotChance");
+        let minBet = SettingsManager.getSetting(userData, "casino.minJackpotBet");
+        let minRatio = SettingsManager.getSetting(userData, "minJackpotRatio");
+        let jackpotChance = SettingsManager.getSetting(userData, "casino.jackpotChance");
 
         if (betAmount < minBet) {
             // No tiny bets winning jackpot
@@ -51,10 +48,10 @@ export default class Casino {
     }
 
     play(userData, betAmount, replyFunc) {
-        let jackpotFillRatio = this.#settingsManager.getSetting(userData, "casino.jackpotFillRatio");
+        let jackpotFillRatio = SettingsManager.getSetting(userData, "casino.jackpotFillRatio");
         let jackpotContribution = Math.floor(betAmount * jackpotFillRatio);
         if (userData.points < betAmount) {
-            replyFunc(`You cannot afford a bet of that size! You only have ${userData.points}.`);
+            replyFunc(`You cannot afford a bet of that size! You only have \$${userData.points}.`);
             return;
         }
 
@@ -68,13 +65,13 @@ export default class Casino {
 
                 this.jackpotSize = 0;
                 userData.points += jackpotAmount;
-                replyFunc(`YOU WIN THE JACKPOT OF ${jackpotAmount}! You now have ${userData.points} points.`);
+                replyFunc(`YOU WIN THE JACKPOT OF \$${jackpotAmount}! You now have \$${userData.points}.`);
             } else {
                 userData.points += (betAmount * 2);
-                replyFunc(`You won 2x your bet! You now have ${userData.points} points. You should try to win even more :)`);
+                replyFunc(`You won 2x your bet! You now have \$${userData.points}. You should try to win even more :)`);
             }
         } else {
-            replyFunc(`Sorry, you didn't win this time. You now have ${userData.points} points. Maybe you should try again :)`);
+            replyFunc(`Sorry, you didn't win this time. You now have \$${userData.points}. Maybe you should try again :)`);
         }
         this.logBalance();
     }
@@ -100,3 +97,5 @@ export default class Casino {
         this.#jackpotBankUser.points = value;
     }
 }
+
+export default new CasinoManager();

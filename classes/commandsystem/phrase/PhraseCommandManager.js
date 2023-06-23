@@ -2,15 +2,14 @@ import fs from "node:fs";
 
 import PhraseCommandBuilder from "./PhraseCommandBuilder.js";
 import BaseCommandManager from "../base/BaseCommandManager.js";
+import SettingsManager from "../../settings/SettingsManager.js";
 
-export default class PhrasePhraseManager extends BaseCommandManager {
+class PhraseCommandManager extends BaseCommandManager {
     
-    #settingsManager;
     #phrases;
 
-    constructor(settingsManager) {
-        super(settingsManager);
-        this.#settingsManager = settingsManager;
+    constructor() {
+        super();
         this.#phrases = [];
 
         this.#registerAutoResponders();
@@ -32,7 +31,7 @@ export default class PhrasePhraseManager extends BaseCommandManager {
         }
 
         let matchCount = 0;
-        const maxCount = this.#settingsManager.getSetting(userData, "phraseManager.maxPhrasesAtOnce");
+        const maxCount = SettingsManager.getSetting(userData, "phraseManager.maxPhrasesAtOnce");
         for (let phrase of this.#phrases) {
             if (phrase.isRateLimited(userData)) {
                 // Rate limited
@@ -49,7 +48,7 @@ export default class PhrasePhraseManager extends BaseCommandManager {
                         break;
                     }
                 } catch (e) {
-                    console.error("${new Date().toISOString()} [PhraseManager] Error handling command: ", e);
+                    console.error(`${new Date().toISOString()} [PhraseManager] Error handling command: `, e);
                 }
             }
         }
@@ -84,3 +83,5 @@ export default class PhrasePhraseManager extends BaseCommandManager {
         };
     }
 }
+
+export default new PhraseCommandManager();

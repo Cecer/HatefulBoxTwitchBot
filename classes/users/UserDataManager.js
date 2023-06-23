@@ -5,7 +5,7 @@ import chalk from "chalk";
 import BetterMap from "../utils/BetterMap.js";
 import UserData from "./UserData.js";
 
-export default class UserDataManager {
+class UserDataManager {
 
     #usersById;
     #usersByUsername;
@@ -97,3 +97,5 @@ export default class UserDataManager {
         });
     }
 }
+
+export default new UserDataManager();

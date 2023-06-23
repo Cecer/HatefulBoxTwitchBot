@@ -1,6 +1,6 @@
-import BetterMap from "./utils/BetterMap.js";
+import BetterMap from "../utils/BetterMap.js";
 
-export default class SettingsManager {
+class SettingsManager {
 
     #baseSettings;
     #groupOverrides;
@@ -47,6 +47,21 @@ export default class SettingsManager {
         this.setBase("command.top.excluded", true);
         this.setBase("command.idle.maxCount", 15);
         this.setBase("command.idle.excluded", true);
+        this.setBase("command.smite.cost", 5000);
+        this.setBase("command.smite.allowed", true);
+        this.setBase("command.splashout.allowed", true);
+        this.setBase("command.splashout.maxCount", 20);
+        this.setBase("command.splashout.costEach", 25);
+        this.setBase("command.rainbow.allowed", true);
+        this.setBase("command.rainbow.costEach", 5);
+        this.setBase("command.rainbow.maxCount", 1000);
+        this.setBase("command.180.allowed", true);
+        this.setBase("command.180.cost", 500);
+        // this.setBase("command.companies.allowed", false);
+        // this.setBase("command.company.allowed", false);
+        // this.setBase("command.investments.allowed", false);
+        // this.setBase("command.buyshares.allowed", false);
+        // this.setBase("command.sellshares.allowed", false);
 
         this.setGroup("subscriber", "payday.maxIdleTime", 15 * 60 * 1000);
         this.setGroup("subscriber", "payday.payAmount", 50);
@@ -73,6 +88,16 @@ export default class SettingsManager {
         this.setGroup("admin", "command.taxall.allowVirtual", true);
         this.setGroup("admin", "command.setting.allowVirtual", true);
         this.setGroup("admin", "command.group.allowVirtual", true);
+        this.setGroup("admin", "command.splashout.maxCount", 200);
+        this.setGroup("admin", "command.splashout.costEach", 0);
+        this.setGroup("admin", "command.rainbow.maxCount", 1000);
+        this.setGroup("admin", "command.rainbow.costEach", 0);
+        this.setGroup("admin", "command.180.allowed", true);
+        this.setGroup("admin", "command.companies.allowed", true);
+        this.setGroup("admin", "command.company.allowed", true);
+        this.setGroup("admin", "command.investments.allowed", true);
+        this.setGroup("admin", "command.buyshares.allowed", true);
+        this.setGroup("admin", "command.sellshares.allowed", true);
 
         this.setGroup("bot", "commandManager.ignore", true);
         this.setGroup("bot", "command.idle.excluded", true);
@@ -116,3 +141,4 @@ export default class SettingsManager {
         return this.#groupOverrides.get(group).getOrDefault(key, fallback);
     }
 }
+export default new SettingsManager();
