@@ -3,6 +3,7 @@ import fs from "node:fs/promises";
 import RconManager from "../rcon/RconManager.js";
 import UserDataManager from "../users/UserDataManager.js";
 import TwitchManager from "./TwitchManager.js";
+import InvestmentManager from "../investment/InvestmentManager.js";
 
 const CONVERT_TO_BOX_POINTS_REWARD_ID = "9c4a1168-e229-469a-be50-96b6c47d5076";
 const SUPPORT_CPMM_REWARD_ID = "7df242c1-b8b8-42d3-8c06-ea8328df152c";
@@ -19,8 +20,8 @@ class RedemptionManager {
         
         this.#registry = new Map();
         this.#registry.set(CONVERT_TO_BOX_POINTS_REWARD_ID, this.#handle_convertToBoxPoints);
-        this.#registry.set(SUPPORT_CPMM_REWARD_ID, this.#handle_supportCPPM);
-        this.#registry.set(CRITICISE_CPPM_REWARD_ID, this.#handle_criticiseCPPM);
+        this.#registry.set(SUPPORT_CPMM_REWARD_ID, this.#handle_supportCPMM);
+        this.#registry.set(CRITICISE_CPPM_REWARD_ID, this.#handle_criticiseCPMM);
     }
 
     async processRedeption(data) {
@@ -46,14 +47,16 @@ class RedemptionManager {
         await handle.reply(`Channels points converted. Enjoy the \$${handle.cost}!`);
     }
 
-    async #handle_supportCPPM(handle) {
-        await handle.refund();
-        await handle.reply("That reward is not yet implemented. Your channel points have been refunded.");
+    async #handle_supportCPMM(handle) {
+        InvestmentManager.CPMMOption.applyInfluence(1);
+        await handle.complete();
+        await handle.reply("Your support for CPMM has been received!");
     }
 
-    async #handle_criticiseCPPM(handle) {
-        await handle.refund();
-        await handle.reply("That reward is not yet implemented. Your channel points have been refunded.");
+    async #handle_criticiseCPMM(handle) {
+        InvestmentManager.CPMMOption.applyInfluence(-1);
+        await handle.complete();
+        await handle.reply("Your criticism against CPMM has been received!");
     }
 }
 

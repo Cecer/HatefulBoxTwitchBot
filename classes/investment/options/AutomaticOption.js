@@ -37,7 +37,8 @@ export default class AutomaticOption extends BaseOption {
             return 0;
         }
         let value = await this._getLiveData();
-        value *=  this._unitDataValue;
+        // console.log(`${new Date().toISOString()} ${chalk.red(`[INVESTMENTS]`)} ${chalk.gray(`${this.id} live data is ${value} * ${this._unitDataValue}.`)}`);
+        value *= this._unitDataValue;
         this.#lastUpdateTimestamp = Date.now();
         if (Number.isNaN(value)) {
             console.log(`${new Date().toISOString()} ${chalk.red(`[INVESTMENTS]`)} ${chalk.yellow(`${this.id} live value is NaN! Skipping update.`)}`);

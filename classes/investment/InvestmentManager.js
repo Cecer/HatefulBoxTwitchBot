@@ -17,6 +17,7 @@ class InvestmentManager {
     #discordValueHistory;
     #discordValueHistorySize;
 
+    #cpmmOption;
 
     constructor(config) {
         this.#webhookMessageUrl = config.investment.webhookMessageUrl;
@@ -25,6 +26,7 @@ class InvestmentManager {
         this.#discordValueHistory = [];
         this.#discordValueHistorySize = 360;
         
+        this.#cpmmOption = new ChannelPointMarketManipulationOption("CPMM", "Channel point market manipulation");
         this.#registerOptions(
             new ManualOption("CGPT", "Random numbers from ChatGPT (0-2000)"),
             new ManualOption("DLST", "Download speed test in Mbps"),
@@ -37,14 +39,16 @@ class InvestmentManager {
             new ManualOption("RORG", "Random numbers from random.org (0-2000)"),
             new ManualOption("ULST", "Upload speed test in Mbps"),
             new ManualOption("YTUD", "Subscribed YouTube videos uploaded yesterday"),
-            new ChannelPointMarketManipulationOption("CPMM", "Channel point market manipulation"),
+            this.#cpmmOption,
             new WeatherInBexhillAutomaticOption("WIBT", "Current temperature in Bexhill"),
             new SteamAppPlayerCountAutomaticOption("DRCP", "Deep Rock current player count", 548430),
             new FileContentsAutomaticOption("DRAM", "DesktopAlpha RAM used in bytes according to free", "./data/misc/DRAM_live_data.txt")
         );
 
-
         this.#tick();
+        setTimeout(() => {
+            this.#tick();
+        }, 5000);
         setInterval(() => {
             this.#tick();
         }, 60000);
@@ -149,6 +153,10 @@ class InvestmentManager {
         for (let option of this.#options.values()) {
             option.reload();
         }
+    }
+
+    get CPMMOption() {
+        return this.#cpmmOption;
     }
 }
 

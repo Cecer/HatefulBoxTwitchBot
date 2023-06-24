@@ -112,7 +112,6 @@ class TwitchManager {
     }
 
     sendChatMessage(message, channel) {
-        console.log(message, channel);
         this.#chatClient.say(channel || this.#channelName, message);
         
         let selfUserData = UserDataManager.getUserById(this.#chatUserId);
