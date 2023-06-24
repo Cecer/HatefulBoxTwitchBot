@@ -37,7 +37,7 @@ class RedemptionManager {
         if (userData.groups.has("freeredeems")) {
             await handle.refund();
         }
-        handler.call(this, handle);
+        await handler.call(this, handle);
     }
 
     async #handle_convertToBoxPoints(handle) {
