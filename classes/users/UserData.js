@@ -180,6 +180,10 @@ export default class UserData {
         process.nextTick(() => {
             if (this.#needsSave) {
                 this.#needsSave = false;
+                if (!Number.isInteger(this.#points)) {
+                    throw new Error("Refusing to save user data with NaN points");
+                }
+
                 let data = {
                     userId: this.#userId,
                     username: this.#username,

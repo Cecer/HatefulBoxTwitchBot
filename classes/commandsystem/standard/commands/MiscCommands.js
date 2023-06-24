@@ -3,6 +3,8 @@ import crypto from "node:crypto";
 import StandardCommandManager from "../StandardCommandManager.js";
 import SettingsManager from "../../../settings/SettingsManager.js";
 import RconManager from "../../../rcon/RconManager.js";
+import RedemptionManager from "../../../twitch/RedemptionManager.js";
+import TwitchManager from "../../../twitch/TwitchManager.js";
 
 export default () => {
     register_lucky();
@@ -10,6 +12,12 @@ export default () => {
     register_splashout();
     register_rainbow();
     register_180();
+
+    // register_clonereward();
+    // register_test1();
+    // register_test2();
+    // register_test3();
+    // register_test4();
 }
 
 function register_lucky() {
@@ -284,6 +292,93 @@ function register_180() {
             replyFunc("Like a record!");
 
             userData.points -= cost;
+        })
+        .register();
+}
+
+function register_clonereward() {
+    StandardCommandManager.newBuilder("clonereward")
+        .handler(async (userData, args, replyFunc) => {
+            if (args.length < 2) {
+                replyFunc(`Usage: !clonereward <reward_id> <title_prefix>`);
+                return;
+            }
+
+            let rewardId = args.shift();
+            if (!/^[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}$/.test(rewardId)) {
+                replyFunc(`Error: Invalidate rewardId!`);
+                return;
+            }
+
+            let titlePrefix = JSON.parse(args.join(" "));
+            
+            let response = await RedemptionManager.cloneReward(rewardId, titlePrefix);
+            replyFunc(`Reward cloned to ${response.id}`);
+        })
+        .register();
+}
+function register_test1() {
+    StandardCommandManager.newBuilder("test1")
+        .handler(async (userData, args, replyFunc) => {
+            if (!userData.groups.has("admin")) {
+                return;
+            }
+                        
+            let reward = await TwitchManager.apiClient.channelPoints.createCustomReward("80984686", {
+                autoFulfill: false,
+                cost: 500,
+                globalCooldown: 30,
+                isEnabled: true,
+                title: "Support CPMM",
+                prompt: "Supporting CPMM will help increase their market value.",
+                userInputRequired: false
+            });
+            replyFunc(`Reward created as ${reward.id}`);
+        })
+        .register();
+}
+function register_test2() {
+    StandardCommandManager.newBuilder("test2")
+        .handler(async (userData, args, replyFunc) => {
+            if (!userData.groups.has("admin")) {
+                return;
+            }
+                        
+            let reward = await TwitchManager.apiClient.channelPoints.createCustomReward("80984686", {
+                autoFulfill: false,
+                cost: 500,
+                globalCooldown: 30,
+                isEnabled: true,
+                title: "Criticise CPMM",
+                prompt: "Criticising CPMM will help decrease their market value.",
+                userInputRequired: false
+            });
+            replyFunc(`Reward created as ${reward.id}`);
+        })
+        .register();
+}
+function register_test3() {
+    StandardCommandManager.newBuilder("test3")
+        .handler(async (userData, args, replyFunc) => {
+            if (!userData.groups.has("admin")) {
+                return;
+            }
+                        
+            let response = await TwitchManager.apiClient.channelPoints.getCustomRewards("80984686", false);
+            console.log(response.map(reward => `${reward.id}:"${reward.title}"`).join("\n"));
+            replyFunc("Done");
+        })
+        .register();
+}
+function register_test4() {
+    StandardCommandManager.newBuilder("test4")
+        .handler(async (userData, args, replyFunc) => {
+            if (!userData.groups.has("admin")) {
+                return;
+            }
+                        
+            await TwitchManager.apiClient.channelPoints.deleteCustomReward("80984686", "292a17b8-d67a-45cb-a10f-41037c66b06e");
+            replyFunc("Done");
         })
         .register();
 }

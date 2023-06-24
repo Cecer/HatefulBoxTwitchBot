@@ -11,7 +11,7 @@ class SettingsManager {
         this.#baseSettings = new BetterMap();
         this.#groupOverrides = new BetterMap();
 
-        this.groupSearchOrder = ["nojackpot", "admin", "bot", "virtual", "broadcaster", "moderator", "vip", "subscriber"];
+        this.groupSearchOrder = ["nojackpot", "admin", "bot", "virtual", "broadcaster", "moderator", "vip", "subscriber", "freeredeems"];
         for (let group of this.groupSearchOrder) {
             this.#groupOverrides.set(group, new BetterMap());
         }
@@ -57,6 +57,8 @@ class SettingsManager {
         this.setBase("command.rainbow.maxCount", 1000);
         this.setBase("command.180.allowed", true);
         this.setBase("command.180.cost", 500);
+        this.setBase("command.reloadcompanies.allowed", false);
+        this.setBase("command.clonereward.allowed", false);
         // this.setBase("command.companies.allowed", false);
         // this.setBase("command.company.allowed", false);
         // this.setBase("command.investments.allowed", false);
@@ -93,11 +95,13 @@ class SettingsManager {
         this.setGroup("admin", "command.rainbow.maxCount", 1000);
         this.setGroup("admin", "command.rainbow.costEach", 0);
         this.setGroup("admin", "command.180.allowed", true);
+        this.setGroup("admin", "command.clonereward.allowed", true);
         this.setGroup("admin", "command.companies.allowed", true);
         this.setGroup("admin", "command.company.allowed", true);
         this.setGroup("admin", "command.investments.allowed", true);
         this.setGroup("admin", "command.buyshares.allowed", true);
         this.setGroup("admin", "command.sellshares.allowed", true);
+        this.setGroup("admin", "command.reloadcompanies.allowed", true);
 
         this.setGroup("bot", "commandManager.ignore", true);
         this.setGroup("bot", "command.idle.excluded", true);

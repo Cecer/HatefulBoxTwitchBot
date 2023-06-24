@@ -68,6 +68,20 @@ class RconManager {
         return await this.executeCommand(`tellraw @a ${JSON.stringify(parts)}`, true);
     }
 
+    async printTwitchRedeption(userData, redeptionTitle) {
+        let parts = [{
+            text: "Twitch > ", 
+            color: "#9146ff"
+        }];
+
+        parts.push({
+            text: `${userData.username} redeemed ${redeptionTitle}`,
+            color: "yellow"
+        });
+
+        return await this.executeCommand(`tellraw @a ${JSON.stringify(parts)}`, true);
+    }
+
     #formatUsername(userData) {
         if (userData.groups.has("bot")) {
             return {

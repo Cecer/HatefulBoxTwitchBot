@@ -1,45 +1,92 @@
 import fs from "node:fs/promises";
 
-import { RefreshingAuthProvider } from "@twurple/auth";
 import { PubSubClient } from "@twurple/pubsub";
 import { ChatClient } from "@twurple/chat";
+import { ApiClient } from "@twurple/api";
 
 import AuthTokenManager from "../auth/AuthTokenManager.js";
 import UserDataManager from "../users/UserDataManager.js";
 import RconManager from "../rcon/RconManager.js";
 import StandardCommandManager from "../commandsystem/standard/StandardCommandManager.js";
 import PhraseCommandManager from "../commandsystem/phrase/PhraseCommandManager.js";
+import RedemptionManager from "./RedemptionManager.js";
 
 class TwitchManager {
-    #authProvider;
-
+    #apiClient;
     #pubSubClient;
     #chatClient;
 
     #channelName;
 
+    #apiUserId
+    #chatUserId;
+    #pubSubUserId;
+    #oauthCodes;
+
     constructor(config) {
-        this.#authProvider = new RefreshingAuthProvider({
-            clientId: config.auth.clientId,
-            clientSecret: config.auth.clientSecret,
-            onRefresh: (userId, tokenData) => AuthTokenManager.onRefresh(userId, tokenData)
-        });
-        this.#channelName = config.channel;
+        this.#apiUserId = config.auth.userIds.api;
+        this.#chatUserId = config.auth.userIds.chat;
+        this.#pubSubUserId = config.auth.userIds.pubSub;
+        this.#channelName = config.channel.name;
+
+        this.#oauthCodes = new Map();
+        //this.#oauthCodes.set(this.#chatUserId,   "");
+        // this.#oauthCodes.set(this.#pubSubUserId, "cc0l9wqxygmpu5asocome6du6uiyaz");
     }
     
     async start() {
-        // await authTokenManager.authenticateFromOAuth(authProvider, "");
-        await AuthTokenManager.authenticateFromFile(this.#authProvider);
-        this.#pubSubClient = new PubSubClient({ authProvider: this.#authProvider });
+        // await this.#authenticate(this.#apiUserId, []); // This is the same as pubsub currently so let's not double authenticate. Twitch might get angry.
+        await this.#authenticate(this.#chatUserId, ["chat"]);
+        await this.#authenticate(this.#pubSubUserId, []);
+
+
         this.#chatClient = new ChatClient({ 
-            authProvider: this.#authProvider, 
+            authProvider: AuthTokenManager.authProvider, 
             channels: [this.#channelName],
             isAlwaysMod: true
         });
-        
         this.#chatClient.connect();
-
         this.#chatClient.onMessage((channel, _, message, metadata) => this.#onChatMessage(channel, message, metadata));
+
+
+        new ApiClient({
+            authProvider: AuthTokenManager.authProvider
+        }).asUser(this.#apiUserId, client => this.#apiClient = client);
+
+
+        this.#pubSubClient = new PubSubClient({ authProvider: AuthTokenManager.authProvider });
+        this.#pubSubClient.onRedemption(this.#pubSubUserId, data => {
+            try {
+                RedemptionManager.processRedeption(data);
+            } catch (e) {
+                console.error(`Error during redeption: ${e}`);
+            }
+            // console.log({
+            //     id: data.id,
+            //     message: data.message,
+            //     redemptionDate: data.redemptionDate,
+            //     rewardCost: data.rewardCost,
+            //     rewardId: data.rewardId,
+            //     rewardIsQueued: data.rewardIsQueued,
+            //     rewardTitle: data.rewardTitle,
+            //     status: data.status,
+            //     userId: data.userId,
+            //     userName: data.userName
+            // });
+        });
+    }
+
+    get apiClient() {
+        return this.#apiClient;
+    }
+
+    async #authenticate(userId, intents) {
+        let code = this.#oauthCodes.get(userId);
+        if (code === undefined) {
+            await AuthTokenManager.authenticateFromFile(userId, intents);
+        } else {
+            await AuthTokenManager.authenticateFromOAuth(userId, code, intents);
+        }
     }
 
     async #onChatMessage(channel, message, metadata) {
@@ -57,20 +104,24 @@ class TwitchManager {
         RconManager.printTwitchChat(userData, message);
     
         process.nextTick(() => {
-            let replyFunc = (reply, senderPrefix = true) => {
-                reply = `${senderPrefix ? `${userData.username} >> ` : ""}${reply}`;
-                this.sendChatMesage(reply, channel);
-                let selfUserData = UserDataManager.getUserById(config.auth.userId);
-                RconManager.printTwitchChat(selfUserData, reply)
-            };
+            let replyFunc = (replyMessage, senderPrefix = true) => this.sendChatReply(userData, replyMessage, senderPrefix, channel);
             if (!StandardCommandManager.handle(userData, message, replyFunc)) {
                 PhraseCommandManager.handle(userData, message, replyFunc);
             }
         });
     }
 
-    sendChatMesage(message, channel) {
+    sendChatMessage(message, channel) {
+        console.log(message, channel);
         this.#chatClient.say(channel || this.#channelName, message);
+        
+        let selfUserData = UserDataManager.getUserById(this.#chatUserId);
+        RconManager.printTwitchChat(selfUserData, message)
+    }
+
+    sendChatReply(userData, message, senderPrefix, channel) {
+        message = `${senderPrefix ? `${userData.username} >> ` : ""}${message}`;
+        this.sendChatMessage(message, channel);
     }
 }
 

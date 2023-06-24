@@ -59,9 +59,9 @@ class PaydayManager {
                 }
             });
         if (totalUsers > 0 && totalPoints > 0) {
-            TwitchManager.sendChatMesage(`[PAY DAY] Paid a total of \$${totalPoints} to ${totalUsers} users!`);
+            TwitchManager.sendChatMessage(`[PAY DAY] Paid a total of \$${totalPoints} to ${totalUsers} users!`);
             if (taxRefund > 0) {
-                TwitchManager.sendChatMesage(`[TAX REFUND] Refunded \$${taxRefund}!`);
+                TwitchManager.sendChatMessage(`[TAX REFUND] Refunded \$${taxRefund}!`);
             }
         }
     }

@@ -29,6 +29,8 @@ export default () => {
     register_buyshares();
     register_sellshares();
     // register_migrate();
+
+    register_reloadinvestmentmanager();
 }
 
 function sIfPlural(value) {
@@ -464,13 +466,18 @@ function register_payday() {
 
 function register_companies() {
     StandardCommandManager.newBuilder("companies")
+        .addAlias("stockmarket")
         .globalRateLimit(60000)
         .handler((userData, args, replyFunc) => {
             replyFunc(`Companies: ${[...InvestmentManager.investmentKeys]
                 .map(id => {
                     let value = InvestmentManager.getValue(id);
+                    if (value <= 0) {
+                        return null;
+                    }
                     return `${id}: \$${value}`
                 })
+                .filter(entry => entry !== null)
                 .join(" | ")}`);
         })
         .register();
@@ -528,7 +535,7 @@ function register_buyshares() {
         .addAlias("buyshare")
         .addAlias("buystock")
         .addAlias("buystocks")
-        .senderRateLimit(5000)
+        .senderRateLimit(2000)
         .handler((userData, args, replyFunc) => {
             if (args.length < 2) {
                 replyFunc(`Usage: !buyshares <company_id> <amount>`);
@@ -552,6 +559,11 @@ function register_buyshares() {
             }
 
             let value = InvestmentManager.getValue(id);
+            if (value <= 0) {
+                replyFunc(`Error: That company is dead. You cannot buy any shares in it.`);
+                return;
+            }
+
             let purchaseValue = value * amount;
 
             if (userData.points < purchaseValue) {
@@ -570,7 +582,7 @@ function register_sellshares() {
         .addAlias("sellshare")
         .addAlias("sellstock")
         .addAlias("sellstocks")
-        .senderRateLimit(5000)
+        .senderRateLimit(2000)
         .handler((userData, args, replyFunc) => {
             if (args.length < 2) {
                 replyFunc(`Usage: !sellshares <company_id> <amount>`);
@@ -608,6 +620,15 @@ function register_sellshares() {
             userData.points += sellValue;
             userData.addInvestment(id, -amount);
             replyFunc(`You have sold ${amount} of your ${owned} ${id} share${sIfPlural(owned)} for \$${sellValue}.`);
+        })
+        .register();
+}
+function register_reloadinvestmentmanager() {
+    StandardCommandManager.newBuilder("reloadinvestmentmanager")
+        .addAlias("reloadim")
+        .handler((userData, args, replyFunc) => {
+            InvestmentManager.reload();
+            replyFunc(`Reloaded.`);
         })
         .register();
 }
