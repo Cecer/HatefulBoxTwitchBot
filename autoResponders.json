@@ -171,6 +171,11 @@
             "response": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec augue mi, dictum consectetur velit vel, mollis efficitur purus. In auctor est orci, non pretium enim dignissim nec. Maecenas nec blandit ipsum, malesuada pretium nulla. Fusce rhoncus ornare nulla, hendrerit placerat massa scelerisque sit amet. Nam interdum pulvinar purus eu mattis. Suspendisse molestie orci elit, ut congue dolor ultricies quis. Phasellus sed pulvinar ipsum, nec commodo ipsum. Vestibulum non urna et ligula auctor est.",
             "senderPrefix": false,
             "globalRateLimit": 600000
+        },
+        {
+            "name": "deeprock",
+            "aliases": ["drg"],
+            "response": "Deep Rock supports is currently on sale on Steam (67% off): https://store.steampowered.com/app/548430/Deep_Rock_Galactic/"
         }
     ],
     "phrases": [
