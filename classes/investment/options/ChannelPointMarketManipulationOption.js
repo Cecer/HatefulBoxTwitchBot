@@ -1,3 +1,5 @@
+import chalk from "chalk";
+
 import NumberUtils from "../../utils/NumberUtils.js";
 import AutomaticOption from "./AutomaticOption.js";
 
@@ -35,14 +37,15 @@ export default class ChannelPointMarketManipulationOption extends AutomaticOptio
         
         // Influence decay
         if (this.#influence !== 0) {
-            if (Math.random() < 0.00069) {
+            if (Math.random() < 0.00207) {
                 this.#influence -= Math.sign(this.#influence);
+                console.log(`${new Date().toISOString()} ${chalk.red(`[INVESTMENTS]`)} ${chalk.gray(`Balancing out CPMM`)}`);
             }
         }
 
         // Influenced random
         let offset = NumberUtils.sigmoid(this.#influence, SIGMOID_SENSITIVITY) - 0.5;
-        let random = NumberUtils.normalRandom(2);
+        let random = NumberUtils.normalRandom(5);
 
         // Return value;
 
