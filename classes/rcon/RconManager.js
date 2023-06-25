@@ -9,7 +9,7 @@ class RconManager {
 
     constructor(config) {
         this.#config = {
-            host: config.mcRcon.host, 
+            host: config.mcRcon.hostname,
             port: config.mcRcon.port, 
             password: config.mcRcon.password, 
             timeout: 30000
@@ -26,7 +26,7 @@ class RconManager {
         this.#client.once("error", e => {
             console.error(`${new Date().toISOString()} [MCRcon] Error: ${e}!`);
             setTimeout(() => {
-                this.connect();
+                this.#reconnect();
             }, 100);
         });
         console.log(`${new Date().toISOString()} [MCRcon] Connected!`);
@@ -43,7 +43,7 @@ class RconManager {
             response = (await this.#client.send(command)).trim();
         } catch (e) {
             console.error(`${new Date().toISOString()} [MCRcon]   Error: ${e}`);
-            await this.connect();
+            await this.#reconnect();
             return "Error";
         }
         if (!silentLog) {
