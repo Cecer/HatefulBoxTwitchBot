@@ -548,20 +548,28 @@ function register_buyshares() {
                 replyFunc(`Error: Unknown company ID.`);
                 return;
             }
+            
 
-            let amount = parseInt(args.shift());
+            let value = InvestmentManager.getValue(id);
+            if (value <= 0) {
+                replyFunc(`Error: That company is dead. You cannot trade it.`);
+                return;
+            }
+
+            let amount = args.shift();
+            if (amount.startsWith("$")) {
+                amount = parseInt(amount.substring(1));
+                amount = Math.floor(amount / value);
+            } else {
+                amount = parseInt(amount);;
+            }
+
             if (Number.isNaN(amount)) {
                 replyFunc(`Error: Invalid amount`);
                 return;
             }
             if (amount <= 0) {
                 replyFunc(`Error: Invalid amount. Must be a positive integer.`);
-                return;
-            }
-
-            let value = InvestmentManager.getValue(id);
-            if (value <= 0) {
-                replyFunc(`Error: That company is dead. You cannot buy any shares in it.`);
                 return;
             }
 
@@ -595,8 +603,26 @@ function register_sellshares() {
                 replyFunc(`Error: Unknown company ID.`);
                 return;
             }
+            
 
-            let amount = parseInt(args.shift());
+            let value = InvestmentManager.getValue(id);
+            if (value <= 0) {
+                replyFunc(`Error: That company is dead. You cannot trade it.`);
+                return;
+            }
+
+            let owned = userData.investments.getOrDefault(id, 0);
+
+            let amount = args.shift();
+            if (amount.startsWith("$")) {
+                amount = parseInt(amount.substring(1));
+                amount = Math.floor(amount / value);
+            } else if (amount.toLowerCase() === "all") {
+                amount = owned;
+            } else {
+                amount = parseInt(amount);
+            }
+
             if (Number.isNaN(amount)) {
                 replyFunc(`Error: Invalid amount`);
                 return;
@@ -606,7 +632,6 @@ function register_sellshares() {
                 return;
             }
 
-            let owned = userData.investments.getOrDefault(id, 0);
             if (owned == 0) {
                 replyFunc(`Error: You don't have any ${id} shares to sell!`);
                 return;
@@ -616,7 +641,6 @@ function register_sellshares() {
                 return;
             }
 
-            let value = InvestmentManager.getValue(id);
             let sellValue = value * amount;
             userData.points += sellValue;
             userData.addInvestment(id, -amount);
