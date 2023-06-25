@@ -51,7 +51,7 @@ class InvestmentManager {
         }, 5000);
         setInterval(() => {
             this.#tick();
-        }, 60000);
+        }, 30000);
     }
 
     #registerOptions(...options) {
