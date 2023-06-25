@@ -20,7 +20,7 @@ class InvestmentManager {
     #cpmmOption;
 
     constructor(config) {
-        this.#webhookMessageUrl = config.investment.webhookMessageUrl;
+        this.#webhookMessageUrl = config.stockMarket.webhookMessageUrl;
 
         this.#options = new BetterMap();
         this.#discordValueHistory = [];
