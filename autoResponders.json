@@ -176,6 +176,11 @@
             "name": "deeprock",
             "aliases": ["drg"],
             "response": "Deep Rock supports is currently on sale on Steam (67% off): https://store.steampowered.com/app/548430/Deep_Rock_Galactic/"
+        },
+        {
+            "name": "mug",
+            "senderPrefix": true,
+            "response": "Get your mug here: https://hatefulbox.com/product/box-drink-mug"
         }
     ],
     "phrases": [
