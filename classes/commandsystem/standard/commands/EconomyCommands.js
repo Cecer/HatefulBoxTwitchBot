@@ -39,6 +39,7 @@ function sIfPlural(value) {
 
 function register_points() {
     StandardCommandManager.newBuilder("points")
+        .addAlias("balance")
         .senderRateLimit(5000)
         .handler((userData, args, replyFunc) => {
             let target = userData.username;
@@ -506,8 +507,8 @@ function register_company() {
 }
 function register_investments() {
     StandardCommandManager.newBuilder("investments")
-        .addAlias("stocks")
         .addAlias("portfolio")
+        .addAlias("stocks")
         .addAlias("shares")
         //.senderRateLimit(60000)
         .handler((userData, args, replyFunc) => {
