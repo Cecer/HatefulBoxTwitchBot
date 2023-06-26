@@ -37,9 +37,9 @@ export default class ChannelPointMarketManipulationOption extends AutomaticOptio
         
         // Influence decay
         if (this.#influence !== 0) {
-            if (Math.random() < 0.00207) {
+            if (Math.random() < 0.00414) {
                 this.#influence -= Math.sign(this.#influence);
-                console.log(`${new Date().toISOString()} ${chalk.red(`[INVESTMENTS]`)} ${chalk.gray(`Balancing out CPMM`)}`);
+                console.log(`${new Date().toISOString()} ${chalk.red(`[INVESTMENTS]`)} ${chalk.gray(`Balancing out CPMM to ${this.#influence}`)}`);
             }
         }
 
@@ -54,8 +54,7 @@ export default class ChannelPointMarketManipulationOption extends AutomaticOptio
     }
 
     applyInfluence(amount) {
-        this.#influence = Math.min(1000, Math.max(-1000, this.#influence + amount)); // Silently cap influence to +/- 1000 to prevent reaching 0 or 1 
-        this.#influenceChanged = true;
+        this.#influence = Math.min(1000, Math.max(-1000, this.#influence + amount)); // Silently cap influence to +/- 1000 to prevent reaching 0 or 1
         this._save();
     }
 }
