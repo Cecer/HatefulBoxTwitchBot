@@ -107,6 +107,9 @@ export default class UserData {
     recalculateNetWorth() {
         let stockValue = 0;
         for (let [id, amount] of this.#investments.entries()) {
+            if (id === "SURE") {
+                continue;
+            }
             stockValue += InvestmentManager.getValue(id) * amount;
         }
         this.#cachedNetWorth = this.#points + stockValue;

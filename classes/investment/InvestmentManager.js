@@ -8,6 +8,7 @@ import WeatherInBexhillAutomaticOption from "./options/WeatherInBexhillAutomatic
 import SteamAppPlayerCountAutomaticOption from "./options/SteamAppPlayerCountAutomaticOption.js";
 import FileContentsAutomaticOption from "./options/FileContentsAutomaticOption.js";
 import ChannelPointMarketManipulationOption from "./options/ChannelPointMarketManipulationOption.js";
+import OffshoreTaxHavenOption from "./options/OffshoreTaxHavenOption.js";
 
 class InvestmentManager {
     
@@ -42,7 +43,8 @@ class InvestmentManager {
             this.#cpmmOption,
             new WeatherInBexhillAutomaticOption("WIBT", "Current temperature in Bexhill"),
             new SteamAppPlayerCountAutomaticOption("DRCP", "Deep Rock current player count", 548430),
-            new FileContentsAutomaticOption("DRAM", "DesktopAlpha RAM used in bytes according to free", "./data/misc/DRAM_live_data.txt")
+            new FileContentsAutomaticOption("DRAM", "DesktopAlpha RAM used in bytes according to free", "./data/misc/DRAM_live_data.txt"),
+            new OffshoreTaxHavenOption("SURE", "Offshore tax haven")
         );
 
         this.#tick();
@@ -100,6 +102,10 @@ class InvestmentManager {
         let firstHistory = this.#discordValueHistory.length > 0 ? this.#discordValueHistory[0] : new BetterMap();
         let latestHistory = new BetterMap();
         for (let id of this.#options.keys()) {
+            if (id === "SURE") {
+                continue;
+            }
+
             let newValue = this.getValue(id, false);
             let oldValue = firstHistory.getOrDefault(id, newValue);
             latestHistory.set(id, newValue);

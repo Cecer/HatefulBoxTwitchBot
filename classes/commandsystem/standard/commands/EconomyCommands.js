@@ -471,6 +471,7 @@ function register_companies() {
         .globalRateLimit(60000)
         .handler((userData, args, replyFunc) => {
             replyFunc(`Companies: ${[...InvestmentManager.investmentKeys]
+                .filter(id => id !== "SURE")
                 .map(id => {
                     let value = InvestmentManager.getValue(id);
                     if (value <= 0) {
@@ -642,6 +643,14 @@ function register_sellshares() {
             }
 
             let sellValue = value * amount;
+
+            if (id === "SURE") {
+                let riskFactor = sellValue / 100000;
+                if (Math.random() < riskFactor) {
+                    replyFunc(`Error: They feds are watching right now. Probably best not risk making such a large withdrawal right now...`);
+                    return;
+                }
+            }
             userData.points += sellValue;
             userData.addInvestment(id, -amount);
             replyFunc(`You have sold ${amount} of your ${owned} ${id} share${sIfPlural(owned)} for \$${sellValue}.`);
